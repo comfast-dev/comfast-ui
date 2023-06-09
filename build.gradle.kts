@@ -13,8 +13,11 @@ group = "dev.comfast"
 version = "0.1-SNAPSHOT"
 
 dependencies {
-    implementation("dev.comfast:comfast-commons:0.2.3")
+    implementation("org.jetbrains:annotations:24.0.0")
+
+    implementation("dev.comfast:comfast-commons:0.3-SNAPSHOT")
     implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
+    implementation("org.slf4j:slf4j-api:2.0.4")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
