@@ -1,15 +1,21 @@
 package dev.comfast.cf;
-import dev.comfast.cf.common.events.EventsManager;
 import dev.comfast.cf.se.SeleniumLocator;
-import dev.comfast.config.ConfigReader;
+import dev.comfast.cf.se.infra.DriverSource;
+import dev.comfast.experimental.config.ConfigReader;
+import dev.comfast.experimental.events.EventsApi;
+import dev.comfast.experimental.events.EventsManager;
 import dev.comfast.util.waiter.Waiter;
 import org.intellij.lang.annotations.Language;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
-import static dev.comfast.cf.se.infra.DriverSource.getDriver;
+import static dev.comfast.experimental.config.ConfigApi.readConfig;
 
 public class CfApi {
-    public static final ConfigReader config = new ConfigReader();
-    public static final EventsManager<CfLocator> locatorEvents = new EventsManager<>();
+    private static final DriverSource driverSource = new DriverSource();
+    public static final ConfigReader config = readConfig();
+    public static final EventsManager<CfLocator> locatorEvents = EventsApi.get("locatorEvents", CfLocator.class);
+    public static final EventsManager<String> driverEvents = EventsApi.get("driverEvents", String.class);
+    public static final EventsManager<String> stepEvents = EventsApi.get("stepEvents", String.class);
 
     /**
      * Open given url, run browser when needed.
@@ -32,5 +38,9 @@ public class CfApi {
 
     public static Waiter getWaiter() {
         return new Waiter(config.getLong("cf.timeoutMs"));
+    }
+
+    public static RemoteWebDriver getDriver() {
+        return driverSource.getDriver();
     }
 }

@@ -1,7 +1,9 @@
-package dev.comfast.cf;
-import dev.comfast.cf.common.events.AfterEvent;
-import dev.comfast.cf.common.events.BeforeEvent;
-import dev.comfast.cf.common.events.EventListener;
+package dev.comfast.integration;
+import dev.comfast.cf.CfApi;
+import dev.comfast.cf.CfLocator;
+import dev.comfast.experimental.events.AfterEvent;
+import dev.comfast.experimental.events.BeforeEvent;
+import dev.comfast.experimental.events.EventListener;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

@@ -15,7 +15,7 @@ version = "0.1-SNAPSHOT"
 dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
 
-    implementation("dev.comfast:comfast-commons:0.3-SNAPSHOT")
+    implementation("dev.comfast:comfast-commons:0.3.1")
     implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
     implementation("org.slf4j:slf4j-api:2.0.4")
 

@@ -1,4 +1,4 @@
-package dev.comfast.cf;
+package dev.comfast.integration;
 import dev.comfast.cf.common.utils.BrowserContent;
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.BeforeAll;
@@ -38,11 +38,11 @@ class AttributesTest {
     @Test
     public void isDisplayed() {
         content.setBody(
-           "<p id='default'>1</p>" +
-           "<p id='displayNone' style='display:none'>2</p>" +
-           "<p id='visibilityHidden' style='display:block; visibility:hidden'>3</p>" +
-           "<p id='opacity01' style='opacity: 0.1'>4</p>" +
-           "<p id='opacity0' style='opacity: 0'>5</p>"
+            "<p id='default'>1</p>" +
+            "<p id='displayNone' style='display:none'>2</p>" +
+            "<p id='visibilityHidden' style='display:block; visibility:hidden'>3</p>" +
+            "<p id='opacity01' style='opacity: 0.1'>4</p>" +
+            "<p id='opacity0' style='opacity: 0'>5</p>"
         );
 
         assertAll(

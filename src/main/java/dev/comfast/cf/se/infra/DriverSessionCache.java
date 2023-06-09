@@ -16,6 +16,13 @@ import java.util.function.Supplier;
 import static java.lang.String.format;
 import static lombok.AccessLevel.PRIVATE;
 
+/**
+ * Caches WebDriver session to avoid creating new session on each test.
+ * <p>
+ * This is useful for debugging, where creating new session and opening given entry in application is expensive.
+ * <p>
+ * This class is not thread-safe. Don't use it in parallel tests.
+ */
 @Slf4j
 @FieldDefaults(level = PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -23,6 +30,9 @@ public class DriverSessionCache {
     TempFile sessionStoreFile = new TempFile("sessionStoreInfo.txt");
     Supplier<RemoteWebDriver> newDriverSupplier;
 
+    /**
+     * Gets WebDriver instance. If session is cached, it will try to reconnect to it.
+     */
     public RemoteWebDriver get() {
         return tryToReconnect().orElseGet(() -> {
             log.info("Reconnect failed, creating new WebDriver instance");
@@ -51,6 +61,13 @@ public class DriverSessionCache {
         driver.getTitle();
     }
 
+    /**
+     * Creates new RemoteWebDriver instance with fixed session id and url.
+     *
+     * @param sessionId session id
+     * @param browserAddress address of browser
+     * @return WebDriver instance
+     */
     private RemoteWebDriver fixedSessionDriver(final String sessionId, URL browserAddress) {
         CommandExecutor executor = new FixedSessionExecutor(browserAddress, new SessionId(sessionId));
         return new RemoteWebDriver(executor, new DesiredCapabilities());

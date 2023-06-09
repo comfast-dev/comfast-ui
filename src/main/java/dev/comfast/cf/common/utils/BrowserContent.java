@@ -16,6 +16,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 @SuppressWarnings({"UnusedReturnValue", "unused", "JSUnusedLocalSymbols"})
 public class BrowserContent {
+    /**
+     * Copy given resource file to temp folder and open it in browser.
+     * @param resourcePath path to resource file, where root is "src/test/resources"
+     */
     @SneakyThrows
     public void openResourceFile(String resourcePath) {
         URL resource = getClass().getClassLoader().getResource(resourcePath);
@@ -27,12 +31,18 @@ public class BrowserContent {
         open(tempFile.file.toUri().toURL().toString());
     }
 
+    /**
+     * Set style tag to head section
+     */
     public BrowserContent setStyle(@Language("CSS") String styleContent) {
         executeJs("document.querySelector('html>head').innerHTML = arguments[0]",
             "<style>" + styleContent + "</style>");
         return this;
     }
 
+    /**
+     * Set body tag content
+     */
     public BrowserContent setBody(@Language("HTML") String bodyHtml) {
         executeJs("document.querySelector('html>body').innerHTML = arguments[0]", bodyHtml);
         return this;
@@ -62,6 +72,9 @@ public class BrowserContent {
         return this;
     }
 
+    /**
+     * Clear all html content
+     */
     public void clearAll() {
         executeJs("document.querySelector('html').innerHTML = ''");
     }

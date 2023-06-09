@@ -1,4 +1,5 @@
-package dev.comfast.cf;
+package dev.comfast.integration;
+import dev.comfast.cf.CfLocator;
 import dev.comfast.cf.common.utils.BrowserContent;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

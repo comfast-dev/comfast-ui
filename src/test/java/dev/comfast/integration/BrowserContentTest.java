@@ -1,3 +1,4 @@
+package dev.comfast.integration;
 import dev.comfast.cf.CfApi;
 import dev.comfast.cf.common.utils.BrowserContent;
 import org.assertj.core.api.Assertions;

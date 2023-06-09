@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ErrorHandlingTest {
     @BeforeAll static void init() {
         new BrowserContent().setBody(
-        "<p><button id='foobar' style=\"width: 100px; margin: 40px 0;\">foobar</button></p>\n" +
+        "<p><button id='obscuredButton' style=\"width: 100px; margin: 40px 0;\">foobar</button></p>\n" +
         "<div style=\"" +
         "   position: absolute;" +
         "   height: 100px;" +
@@ -30,29 +30,27 @@ public class ErrorHandlingTest {
 
     @Test void properInvalidSelectorError() {
         assertThatThrownBy(() -> $("some.invalid[]]css]").click())
-            .hasMessageContaining("Find Element Failed at index: 0")
             .isInstanceOf(WaitTimeout.class)
             .hasCauseInstanceOf(ElementFindFail.class)
-            .cause().hasCauseInstanceOf(InvalidSelectorException.class);
+            .cause()
+            .hasMessageContaining("Find Element Failed at index: 0")
+            .hasCauseInstanceOf(InvalidSelectorException.class);
 
         assertThatThrownBy(() -> $("//body >> some.invalid[]]css] >> other").click())
-            .hasMessageContaining("Find Element Failed at index: 1")
             .isInstanceOf(WaitTimeout.class)
             .hasCauseInstanceOf(ElementFindFail.class)
-            .cause().hasCauseInstanceOf(InvalidSelectorException.class);
+            .cause()
+            .hasMessageContaining("Find Element Failed at index: 1")
+            .hasCauseInstanceOf(InvalidSelectorException.class);
     }
 
     @Test void clickObscuredElement() {
-        assertThatThrownBy(() -> $("button#foobar").click())
+        assertThatThrownBy(() -> $("#obscuredButton").click())
 //            .hasMessageContaining("Element interaction fail") // todo separated exception type
 //            .hasCauseInstanceOf(ElementInteractionFail.class);
-            .hasMessageContaining("button#foobar")
-            .hasMessageContaining("element click intercepted: Element <button id=")
-            .hasCauseInstanceOf(ElementClickInterceptedException.class);
-    }
-
-    private void expectException(String expectedErrorMessage, Executable func) {
-        Throwable err = assertThrows(ElementFindFail.class, func);
-        assertThat(err.getMessage()).contains(expectedErrorMessage);
+            .hasCauseInstanceOf(ElementClickInterceptedException.class)
+            .cause()
+            .hasMessageContaining("#obscuredButton")
+            .hasMessageContaining("element click intercepted: Element <button id=");
     }
 }

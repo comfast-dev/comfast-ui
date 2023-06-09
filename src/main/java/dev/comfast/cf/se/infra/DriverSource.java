@@ -19,6 +19,10 @@ public class DriverSource {
         () -> new DriverSessionCache(DriverSource::runDriver).get()
     );
 
+    public static RemoteWebDriver getDriver() {
+        return instances.get();
+    }
+
     /**
      * @return Run driver basing on config key:
      * chrome | fiefox| edge | brave | ...
@@ -45,9 +49,5 @@ public class DriverSource {
             case "edge": return new EdgeDriver();
             default: throw new CfFrameworkError("invalid browser name: " + name);
         }
-    }
-
-    public static RemoteWebDriver getDriver() {
-        return instances.get();
     }
 }

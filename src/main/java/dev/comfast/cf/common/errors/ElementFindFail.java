@@ -5,6 +5,10 @@ import lombok.Getter;
 
 import static java.lang.String.format;
 
+/**
+ * Indicates that element was not found at given index in selector chain.
+ * <p>Reason is stored in cause Throwable.</p>
+ */
 @Getter
 public class ElementFindFail extends RuntimeException {
     private final SelectorChain selectorChain;

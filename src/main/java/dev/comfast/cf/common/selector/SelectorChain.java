@@ -1,6 +1,8 @@
 package dev.comfast.cf.common.selector;
 import lombok.EqualsAndHashCode;
 
+import static dev.comfast.cf.common.selector.SelectorParser.normalizeChildSelector;
+
 /**
  * Represents chain of CSS / XPath selectors
  */
@@ -14,7 +16,7 @@ public class SelectorChain {
     }
 
     public SelectorChain add(String selector) {
-        return new SelectorChain(chain + SEPARATOR + SelectorParser.normalizeChildSelector(selector));
+        return new SelectorChain(chain + SEPARATOR + normalizeChildSelector(selector));
     }
 
     public String[] split() {
