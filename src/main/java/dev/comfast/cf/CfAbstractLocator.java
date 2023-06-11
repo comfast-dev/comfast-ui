@@ -1,7 +1,7 @@
 package dev.comfast.cf;
 
 import dev.comfast.cf.common.selector.SelectorChain;
-import dev.comfast.experimental.events.BeforeEvent;
+import dev.comfast.experimental.events.model.Event;
 import lombok.RequiredArgsConstructor;
 
 import java.util.function.Supplier;
@@ -53,7 +53,7 @@ public abstract class CfAbstractLocator implements CfLocator {
      */
     protected <T> T action(Supplier<T> actionFunction, String name, Object... params) {
         return locatorEvents.action(
-            new BeforeEvent<>(this, name, params),
+            new Event<>(this, name, params),
             () -> getWaiter().waitFor(actionFunction));
     }
 
@@ -62,7 +62,7 @@ public abstract class CfAbstractLocator implements CfLocator {
      */
     protected void action(Runnable actionFunction, String name, Object... params) {
         locatorEvents.action(
-            new BeforeEvent<>(this, name, params),
+            new Event<>(this, name, params),
             () -> getWaiter().waitFor(actionFunction));
     }
 }

@@ -1,5 +1,5 @@
 package dev.comfast.cf.se.infra;
-import dev.comfast.experimental.events.BeforeEvent;
+import dev.comfast.experimental.events.model.Event;
 import lombok.SneakyThrows;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -28,7 +28,7 @@ public class FixedSessionExecutor extends HttpCommandExecutor {
 
     @Override
     public Response execute(Command command) throws IOException {
-        var event = new BeforeEvent<>(command, command.getName());
+        var event = new Event<>(command, command.getName());
         driverEvents.callEvent(event);
 
         try {
