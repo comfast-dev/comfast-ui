@@ -15,7 +15,7 @@ version = "0.1-SNAPSHOT"
 dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
 
-    implementation("dev.comfast:comfast-commons:0.3.1")
+    implementation("dev.comfast:comfast-commons:0.3.1-LOCAL")
     implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
     implementation("org.slf4j:slf4j-api:2.0.4")
 
@@ -24,6 +24,7 @@ dependencies {
 }
 
 tasks.test {
+    maxParallelForks = 1
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
 }
@@ -91,6 +92,7 @@ publishing {
                 URI.create("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             else URI.create("https://s01.oss.sonatype.org/content/repositories/releases/")
 
+            //load from %USER_HOME%/.gradle/gradle.properties
             val ossrhUsername: String? by project
             val ossrhPassword: String? by project
             credentials {

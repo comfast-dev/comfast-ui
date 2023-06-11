@@ -6,16 +6,16 @@ import dev.comfast.experimental.events.EventsApi;
 import dev.comfast.experimental.events.EventsManager;
 import dev.comfast.util.waiter.Waiter;
 import org.intellij.lang.annotations.Language;
+import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static dev.comfast.experimental.config.ConfigApi.readConfig;
 
 public class CfApi {
-    private static final DriverSource driverSource = new DriverSource();
     public static final ConfigReader config = readConfig();
+
+    public static final EventsManager<Command> driverEvents = EventsApi.get("driverEvents", Command.class);
     public static final EventsManager<CfLocator> locatorEvents = EventsApi.get("locatorEvents", CfLocator.class);
-    public static final EventsManager<String> driverEvents = EventsApi.get("driverEvents", String.class);
-    public static final EventsManager<String> stepEvents = EventsApi.get("stepEvents", String.class);
 
     /**
      * Open given url, run browser when needed.
@@ -41,6 +41,6 @@ public class CfApi {
     }
 
     public static RemoteWebDriver getDriver() {
-        return driverSource.getDriver();
+        return DriverSource.getDriver();
     }
 }

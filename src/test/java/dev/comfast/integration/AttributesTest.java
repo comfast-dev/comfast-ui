@@ -1,10 +1,16 @@
 package dev.comfast.integration;
+import dev.comfast.cf.CfLocator;
 import dev.comfast.cf.common.utils.BrowserContent;
+import dev.comfast.experimental.events.AfterEvent;
+import dev.comfast.experimental.events.EventListener;
 import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.Command;
 
 import static dev.comfast.cf.CfApi.$;
+import static dev.comfast.cf.CfApi.driverEvents;
+import static dev.comfast.cf.CfApi.locatorEvents;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,6 +19,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AttributesTest {
     private static BrowserContent content;
+
+    /**
+     * EXPERIMENTAL
+     * //todo remove it in prod
+     */
+    @BeforeAll static void initEvents() {
+        locatorEvents.addListener("sout",  new EventListener<>() {
+            @Override public void after(AfterEvent<CfLocator> event) {
+                System.out.println(event);
+            }
+        });
+        driverEvents.addListener("sout", new EventListener<>() {
+            @Override public void after(AfterEvent<Command> event) {
+                System.out.println(event);
+            }
+        });
+    }
 
     @BeforeAll
     public static void init() {

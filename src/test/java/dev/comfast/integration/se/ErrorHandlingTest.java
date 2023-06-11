@@ -1,17 +1,14 @@
-package dev.comfast.cf.se;
+package dev.comfast.integration.se;
 import dev.comfast.cf.common.errors.ElementFindFail;
 import dev.comfast.cf.common.utils.BrowserContent;
 import dev.comfast.util.waiter.WaitTimeout;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.InvalidSelectorException;
 
 import static dev.comfast.cf.CfApi.$;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ErrorHandlingTest {
     @BeforeAll static void init() {

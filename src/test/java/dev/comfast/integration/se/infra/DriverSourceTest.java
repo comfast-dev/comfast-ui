@@ -1,6 +1,6 @@
-package dev.comfast.cf.se.infra;
+package dev.comfast.integration.se.infra;
+import dev.comfast.cf.se.infra.DriverSource;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.SessionId;
@@ -13,7 +13,6 @@ import static dev.comfast.cf.se.infra.DriverSource.getDriver;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-@Slf4j
 @Disabled("crash other tests, not implemented")
 class DriverSourceTest {
 

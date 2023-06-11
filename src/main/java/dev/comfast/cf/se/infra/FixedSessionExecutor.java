@@ -1,4 +1,5 @@
 package dev.comfast.cf.se.infra;
+import dev.comfast.experimental.events.BeforeEvent;
 import lombok.SneakyThrows;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.HttpCommandExecutor;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Map;
+
+import static dev.comfast.cf.CfApi.driverEvents;
 
 /**
  * Used to create custom RemoteWebDriver instance
@@ -25,9 +28,16 @@ public class FixedSessionExecutor extends HttpCommandExecutor {
 
     @Override
     public Response execute(Command command) throws IOException {
-        return command.getName().equals("newSession")
-               ? mockNewSession()
-               : super.execute(command);
+        var event = new BeforeEvent<>(command, command.getName());
+        driverEvents.callEvent(event);
+
+        try {
+            return command.getName().equals("newSession")
+                   ? mockNewSession()
+                   : super.execute(command);
+        } finally {
+            driverEvents.callEvent(event.passed("OK"));
+        }
     }
 
     private Response mockNewSession() {

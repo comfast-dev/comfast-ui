@@ -1,4 +1,4 @@
-package dev.comfast.cf.se.infra;
+package dev.comfast.integration.se.infra;
 import dev.comfast.cf.CfApi;
 import org.junit.jupiter.api.Test;
 

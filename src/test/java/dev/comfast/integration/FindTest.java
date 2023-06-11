@@ -24,17 +24,12 @@ public class FindTest {
     }
 
     @Test void findCss() {
-        shouldFind(2, $("input"));
-        shouldFind(2, $("html input"));
-
-        shouldFind(2, $("form input"));
-        shouldFind(2, $("form > input"));
-        shouldFind(1, $("form >> input"));
-        shouldFind(1, $("form").$("input"));
-    }
-
-    private void shouldFind(int count, CfLocator locator) {
-        assertEquals(count, locator.count());
+        shouldFindCount($("input"), 2);
+        shouldFindCount($("html input"), 2);
+        shouldFindCount($("form input"), 2);
+        shouldFindCount($("form > input"), 2);
+        shouldFindCount($("form >> input"), 1);
+        shouldFindCount($("form").$("input"), 1);
     }
 
     @Test void findXpath() {
@@ -42,14 +37,6 @@ public class FindTest {
         shouldFind($("//form/input"), INPUT_VALUE);
         shouldFind($("//html//input"), INPUT_VALUE);
         shouldNotFind($("//html/head/input"));
-    }
-
-    private void shouldFind(CfLocator locator, String text) {
-        assertEquals(text, locator.getValue(), "should find %s in:\n%s".formatted(text, locator));
-    }
-
-    private void shouldNotFind(CfLocator locator) {
-        assertFalse(locator.exists(), "should not find: " + locator);
     }
 
     @Test void nestedCss() {
@@ -82,9 +69,9 @@ public class FindTest {
 
     @Test
     void findAll() {
-        assertEquals(2, $("form input").count());
-        assertEquals(1, $("form").$("input").count());
-        assertEquals(0, $("form").$("article").count());
+        shouldFindCount($("form input"), 2);
+        shouldFindCount($("form").$("input"), 1);
+        shouldFindCount($("form").$("article"), 0);
     }
 
     @Test void crossSearch() {
@@ -103,30 +90,43 @@ public class FindTest {
 
     @Test
     void parentXpath() {
-        assertEquals("form", $("option").$(".. >> ..").getTagName());
+        assertEquals("form",
+            $("option").$(".. >> ..").getTagName());
     }
 
     @Test
     void findNth() {
-        assertEquals("thirdForm", $("form").nth(3).getAttribute("id"));
+        assertEquals("thirdForm",
+            $("form").nth(3).getAttribute("id"));
     }
 
     @Test
     void count() {
-        assertEquals(3, $("form").count());
-        assertEquals(2, $("form input").count());
-        assertEquals(2, $("//form//input").count());
-        assertEquals(1, $("form").$("input").count());
-        assertEquals(1, $("form").$(".//input").count());
-
-        assertEquals(0, $("form").$("article").count());
+        shouldFindCount($("form"), 3);
+        shouldFindCount($("form input"), 2);
+        shouldFindCount($("//form//input"), 2);
+        shouldFindCount($("form").$("input"), 1);
+        shouldFindCount($("form").$(".//input"), 1);
+        shouldFindCount($("form").$("article"), 0);
     }
 
     @Test
     void autoAddDotInNestedXpath() {
         //here, dot is added to second selector
-        assertEquals(1, $("//form").$("//input").count());
-        //here is standard xpath
-        assertEquals(2, $("//form//input").count());
+        shouldFindCount($("//form").$("//input"), 1);
+        shouldFindCount($("//form//input"), 2);
     }
+
+    private void shouldFind(CfLocator locator, String expectedText) {
+        assertEquals(expectedText, locator.getValue(), format("should find '%s' in:\n'%s'", expectedText, locator));
+    }
+
+    private void shouldFindCount(CfLocator locator, int expectedCount) {
+        assertEquals(locator.count(), expectedCount, format("should find %d matches of locator:\n%s", expectedCount, locator));
+    }
+
+    private void shouldNotFind(CfLocator locator) {
+        assertFalse(locator.exists(), "should not find: " + locator);
+    }
+
 }
