@@ -13,14 +13,18 @@ group = "dev.comfast"
 version = "0.1-SNAPSHOT"
 
 dependencies {
-    implementation("dev.comfast:comfast-commons:0.2.3")
+    implementation("org.jetbrains:annotations:24.0.0")
+
+    implementation("dev.comfast:comfast-commons:0.3.2")
     implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
+    implementation("org.slf4j:slf4j-api:2.0.4")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks.test {
+    maxParallelForks = 1
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
 }
@@ -48,7 +52,7 @@ tasks.javadoc {
     if (JavaVersion.current().isJava9Compatible) {
         val opts = (options as StandardJavadocDocletOptions)
         opts.addBooleanOption("html5", true)
-        opts.addStringOption("Xdoclint:none", "-quiet")
+        opts.addBooleanOption("Xdoclint:all,-missing", true)
     }
 }
 
@@ -88,6 +92,7 @@ publishing {
                 URI.create("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             else URI.create("https://s01.oss.sonatype.org/content/repositories/releases/")
 
+            //load from %USER_HOME%/.gradle/gradle.properties
             val ossrhUsername: String? by project
             val ossrhPassword: String? by project
             credentials {

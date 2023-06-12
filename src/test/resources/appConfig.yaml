@@ -1,0 +1,7 @@
+cf:
+  backend: selenium
+  browser:
+    name: brave
+    autoClose: false
+    reconnect: true
+  timeoutMs: 300
