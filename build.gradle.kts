@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "dev.comfast"
-version = "0.1-SNAPSHOT"
+version = "0.2"
 
 dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
