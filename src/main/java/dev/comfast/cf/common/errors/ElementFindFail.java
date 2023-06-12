@@ -15,7 +15,7 @@ public class ElementFindFail extends RuntimeException {
     private final int failIndex;
 
     public ElementFindFail(SelectorChain chain, int failIndex, Throwable cause) {
-        super(format("Find Element Failed at index: %d ->%n%s%nError details:%n%s%n",
+        super(format("Find Element Failed at index: %d ->\n%s\nError details:\n%s\n",
             failIndex,
             new ChainPointerMessage(chain).build(failIndex, cause.getClass().getSimpleName()),
             cause

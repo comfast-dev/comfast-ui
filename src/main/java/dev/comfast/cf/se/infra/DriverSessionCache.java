@@ -37,7 +37,7 @@ public class DriverSessionCache {
         return tryToReconnect().orElseGet(() -> {
             log.info("Reconnect failed, creating new WebDriver instance");
             RemoteWebDriver driver = newDriverSupplier.get();
-            sessionStoreFile.write(format("%s%n%s",
+            sessionStoreFile.write(format("%s\n%s",
                 driver.getSessionId(),
                 ((HttpCommandExecutor) driver.getCommandExecutor()).getAddressOfRemoteServer()));
             return driver;

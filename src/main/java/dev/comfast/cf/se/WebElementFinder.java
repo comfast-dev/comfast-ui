@@ -20,18 +20,31 @@ public class WebElementFinder implements Finder<WebElement> {
     private final SelectorChain chain;
 
     public WebElement find() {
-        return doFind(chain.split());
+        return doFind(true, chain.split());
     }
 
-    private WebElement doFind(String... selectors) {
+    public List<WebElement> findAll() {
+        var selectors = chain.split();
+        if(selectors.length == 0) throw new CfFrameworkError("Empty chain, require at least 1 item");
+
+        var lastBy = string2By(selectors[selectors.length - 1]);
+        if(selectors.length == 1) return getDriver().findElements(lastBy);
+
+        String[] parents = copyOf(selectors, selectors.length - 1);
+
+        WebElement parent = doFind(false, parents);
+        return parent == null ? List.of() : parent.findElements(lastBy);
+    }
+
+    private WebElement doFind(boolean throwIfNotFound, String... selectors) {
         int i = 0;
         try {
-            WebElement currentEl = getDriver().findElement(string2By(selectors[i]));
-            for(i = 1; i < selectors.length; i++) {
-                currentEl = findChild(currentEl, string2By(selectors[i]));
-            }
-            return currentEl;
+            SearchContext parent = getDriver();
+            for(; i < selectors.length; i++)
+                parent = findChild(parent, string2By(selectors[i]));
+            return (WebElement) parent;
         } catch(InvalidSelectorException | NoSuchElementException ex) {
+            if(!throwIfNotFound) return null;
             throw new ElementFindFail(chain, i, ex);
         }
     }
@@ -42,21 +55,10 @@ public class WebElementFinder implements Finder<WebElement> {
                : By.cssSelector(selector);
     }
 
-    public List<WebElement> findAll() {
-        var selectors = chain.split();
-        if(selectors.length == 0) throw new CfFrameworkError("Empty chain, require at least 1 item");
-
-        var lastBy = string2By(selectors[selectors.length - 1]);
-        if(selectors.length == 1) return getDriver().findElements(lastBy);
-
-        var parents = copyOf(selectors, selectors.length - 1);
-        return doFind(parents).findElements(lastBy);
-    }
-
     /**
      * Find child of parent element, includes shadow dow
      */
-    private WebElement findChild(WebElement parent, By by) {
+    private WebElement findChild(SearchContext parent, By by) {
         try {
             return parent.findElement(by);
         } catch(NoSuchElementException ex) {

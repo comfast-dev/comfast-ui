@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static dev.comfast.cf.CfApi.$;
 import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -98,6 +99,14 @@ class FindTest {
     void findNth() {
         assertEquals("thirdForm",
             $("form").nth(3).getAttribute("id"));
+    }
+
+    @Test void isDisplayedDoesntThrowTest() {
+        assertThatCode(() -> {
+            assertTrue($("#selectForm >> option").isDisplayed());
+            assertFalse($("#selectForm >> lol >> option").isDisplayed()); // 2nd element not found
+            assertFalse($("#selectForm >> option >> lol").isDisplayed()); // 3rd element not found
+        }).doesNotThrowAnyException();
     }
 
     @Test

@@ -1,34 +1,10 @@
 package dev.comfast.cf.common.errors;
-import dev.comfast.cf.CfLocator;
 import dev.comfast.cf.common.selector.SelectorChain;
-import dev.comfast.experimental.events.EventListener;
-import dev.comfast.experimental.events.model.AfterEvent;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.remote.Command;
 
-import static dev.comfast.cf.CfApi.driverEvents;
-import static dev.comfast.cf.CfApi.locatorEvents;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ElementFindFailTest {
-    /**
-     * EXPERIMENTAL
-     * //todo remove it in prod
-     */
-    @BeforeAll static void initEvents() {
-        locatorEvents.addListener("sout", new EventListener<>() {
-            @Override public void after(AfterEvent<CfLocator> event) {
-                System.out.println(event);
-            }
-        });
-        driverEvents.addListener("sout", new EventListener<>() {
-            @Override public void after(AfterEvent<Command> event) {
-                System.out.println("-----" + event);
-            }
-        });
-    }
-
     @Test void properMessageTest() {
         var chain = new SelectorChain("div.active >> //some/xpath >> button:nth-child(2) >> span");
         var cause = new RuntimeException("oh no, failed");

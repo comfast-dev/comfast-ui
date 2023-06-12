@@ -2,6 +2,7 @@ package dev.comfast.cf;
 
 import dev.comfast.cf.common.selector.SelectorChain;
 import dev.comfast.experimental.events.model.BeforeEvent;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import java.util.function.Supplier;
@@ -10,6 +11,7 @@ import static dev.comfast.cf.CfApi.getWaiter;
 import static dev.comfast.cf.CfApi.locatorEvents;
 import static java.util.Arrays.asList;
 
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public abstract class CfAbstractLocator implements CfLocator {
     protected final SelectorChain chain;

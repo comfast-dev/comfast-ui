@@ -127,8 +127,8 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         return finder.find();
     }
 
-    private Optional<WebElement> tryFind() {
-        var list = finder.findAll();
-        return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
+    protected Optional<WebElement> tryFind() {
+        try { return Optional.of(find());
+        } catch(Exception e) { return Optional.empty(); }
     }
 }

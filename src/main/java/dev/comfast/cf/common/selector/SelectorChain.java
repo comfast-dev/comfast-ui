@@ -10,8 +10,6 @@ import static dev.comfast.cf.common.selector.SelectorParser.normalizeChildSelect
  */
 @EqualsAndHashCode
 public class SelectorChain implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     private static final String SEPARATOR = " >> ";
     private final String chain;
 

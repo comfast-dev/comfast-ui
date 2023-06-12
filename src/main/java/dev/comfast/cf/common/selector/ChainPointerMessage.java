@@ -25,7 +25,7 @@ public class ChainPointerMessage {
             .sum();
 
         final String spaces = " ".repeat(selectorOffset);
-        return format("  %s%n  %s%s%n  %s%s%n",
+        return format("  %s\n  %s%s\n  %s%s\n",
             chain, spaces, ARROW, spaces, pointerMessage);
     }
 }
