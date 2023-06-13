@@ -66,8 +66,8 @@ class ExamplesTest {
         // You can reuse same browser between multiple runs of application
         // can be useful for debugging when logging in/initialize phase takes some time
 
-        System.setProperty("cf.autoClose", "false");
-        System.setProperty("cf.reconnect", "true");
+        System.setProperty("cf.browser.autoClose", "false");
+        System.setProperty("cf.browser.reconnect", "true");
 
         //some time consuming initialization
         open("https://www.wikipedia.org");
@@ -82,8 +82,8 @@ class ExamplesTest {
 
     @Test void example4_reuseDriver_2() {
         // debug, or just continue work with the same browser, don't need to reopen it or log in again
-        System.setProperty("cf.autoClose", "false");
-        System.setProperty("cf.reconnect", "true");
+        System.setProperty("cf.browser.autoClose", "false");
+        System.setProperty("cf.browser.reconnect", "true");
 
         //feel free to edit or experiment with the page
         assertEquals("Python[edit]", $("//h5").nth(1).getText());
