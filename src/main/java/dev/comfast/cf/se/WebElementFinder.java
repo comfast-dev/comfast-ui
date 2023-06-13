@@ -5,6 +5,7 @@ import dev.comfast.cf.common.selector.SelectorChain;
 import dev.comfast.cf.common.selector.SelectorParser;
 import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
@@ -43,7 +44,7 @@ public class WebElementFinder implements Finder<WebElement> {
             for(; i < selectors.length; i++)
                 parent = findChild(parent, string2By(selectors[i]));
             return (WebElement) parent;
-        } catch(InvalidSelectorException | NoSuchElementException ex) {
+        } catch(InvalidSelectorException | NoSuchElementException | InvalidArgumentException ex) {
             if(!throwIfNotFound) return null;
             throw new ElementFindFail(chain, i, ex);
         }
