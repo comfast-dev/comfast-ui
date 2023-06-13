@@ -1,0 +1,6 @@
+cf:
+  timeoutMs: 4000
+  browser:
+    name: chrome
+    autoClose: true
+    reconnect: false

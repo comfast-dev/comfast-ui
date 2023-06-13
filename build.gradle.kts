@@ -10,12 +10,12 @@ plugins {
 }
 
 group = "dev.comfast"
-version = "0.2.2"
+version = "0.2.3"
 
 dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
 
-    implementation("dev.comfast:comfast-commons:0.3.3")
+    implementation("dev.comfast:comfast-commons:0.3.4")
     api("org.seleniumhq.selenium:selenium-java:4.8.3")
 
     implementation("org.seleniumhq.selenium:selenium-java:4.8.3")

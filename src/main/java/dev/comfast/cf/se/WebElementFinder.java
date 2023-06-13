@@ -40,10 +40,11 @@ public class WebElementFinder implements Finder<WebElement> {
     private WebElement doFind(boolean throwIfNotFound, String... selectors) {
         int i = 0;
         try {
-            SearchContext parent = getDriver();
-            for(; i < selectors.length; i++)
-                parent = findChild(parent, string2By(selectors[i]));
-            return (WebElement) parent;
+            WebElement currentEl = getDriver().findElement(string2By(selectors[i]));
+            for(i = 1; i < selectors.length; i++) {
+                currentEl = findChild(currentEl, string2By(selectors[i]));
+            }
+            return currentEl;
         } catch(InvalidSelectorException | NoSuchElementException | InvalidArgumentException ex) {
             if(!throwIfNotFound) return null;
             throw new ElementFindFail(chain, i, ex);
