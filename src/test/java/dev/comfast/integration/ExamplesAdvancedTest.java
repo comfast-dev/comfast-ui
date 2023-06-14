@@ -5,8 +5,8 @@ import dev.comfast.experimental.events.EventListener;
 import dev.comfast.experimental.events.model.AfterEvent;
 import dev.comfast.experimental.events.model.BeforeEvent;
 import dev.comfast.experimental.events.model.FailedEvent;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.openqa.selenium.remote.Command;
 
 import static dev.comfast.cf.CfApi.$;
@@ -14,7 +14,7 @@ import static dev.comfast.cf.CfApi.open;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled("Examples depend on external site, not need to run it before every release")
+@EnabledIfSystemProperty(named = "allTests", matches = "true")
 class ExamplesAdvancedTest {
     @Test void example7_highLevelEvents() {
         // It is possible to connect through events to any action performed by the library

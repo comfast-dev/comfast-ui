@@ -1,6 +1,5 @@
 package dev.comfast.integration.se.infra;
 import dev.comfast.cf.CfApi;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

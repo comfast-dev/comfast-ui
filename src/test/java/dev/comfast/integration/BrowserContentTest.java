@@ -2,11 +2,9 @@ package dev.comfast.integration;
 import dev.comfast.cf.CfApi;
 import dev.comfast.cf.common.utils.BrowserContent;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 class BrowserContentTest {
-    @Disabled("Not working feature how to handle Trusted HTML in Brave")
     @Test void trustedHtmlTest() {
         try {
             Assertions.assertThatCode(() -> {
@@ -14,7 +12,7 @@ class BrowserContentTest {
                 new BrowserContent().setBody("<ul><li>xxx</li></ul>");
             }).doesNotThrowAnyException();
         } finally {
-            CfApi.open("chrome://newTab");
+            CfApi.open("about:blank");
         }
     }
 }

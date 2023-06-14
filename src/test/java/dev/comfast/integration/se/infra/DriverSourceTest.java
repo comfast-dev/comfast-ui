@@ -13,9 +13,8 @@ import static dev.comfast.cf.se.infra.DriverSource.getDriver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Disabled("crash other tests, not implemented")
+@Disabled("run manually, crash other tests")
 class DriverSourceTest {
 
     @Test void runBrowser() {

@@ -1,8 +1,8 @@
 package dev.comfast.integration;
 import dev.comfast.cf.CfApi;
 import dev.comfast.cf.CfLocator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import static dev.comfast.cf.CfApi.$;
 import static dev.comfast.cf.CfApi.open;
@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Disabled("Examples depend on external site, not need to run it before every release")
 @SuppressWarnings("unused")
+@EnabledIfSystemProperty(named = "allTests", matches = "true")
 class ExamplesTest {
     @Test void example1_chainedLocators() {
         //opens default browser and navigates to url

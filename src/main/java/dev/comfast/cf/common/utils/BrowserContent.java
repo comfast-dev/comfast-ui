@@ -1,14 +1,15 @@
 package dev.comfast.cf.common.utils;
+import dev.comfast.cf.CfApi;
 import dev.comfast.util.TempFile;
 import lombok.SneakyThrows;
 import org.intellij.lang.annotations.Language;
+import org.openqa.selenium.JavascriptException;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static dev.comfast.cf.CfApi.executeJs;
 import static dev.comfast.cf.CfApi.open;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -78,5 +79,21 @@ public class BrowserContent {
      */
     public void clearAll() {
         executeJs("document.querySelector('html').innerHTML = ''");
+    }
+
+    /**
+     * Handle Exception:
+     * Opens a new page if the current one is secured by TrustedHTML
+     */
+    private Object executeJs(@Language("JavaScript") String script, Object... args) {
+        try {
+            return CfApi.executeJs(script, args);
+        } catch(JavascriptException e) {
+            if(e.getMessage().contains("This document requires 'TrustedHTML' assignment")) {
+                open("about:blank");
+                return CfApi.executeJs(script, args);
+            }
+            throw e;
+        }
     }
 }

@@ -30,6 +30,12 @@ tasks.test {
     systemProperty("file.encoding", "UTF-8")
 }
 
+tasks.register<Test>("allTests") {
+    useJUnitPlatform()
+    systemProperty("file.encoding", "UTF-8")
+    systemProperty("all.tests", "true")
+}
+
 /// COMMON
 java {
     sourceCompatibility = JavaVersion.VERSION_11
