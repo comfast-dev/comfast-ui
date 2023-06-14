@@ -7,9 +7,9 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Disabled("run manually")
 class ReconnectTest {
     @Test
-    @Disabled("need to be run manually to check if session is the same")
     void reconnectTest() {
         RemoteWebDriver driver1 = new DriverSessionCache(ChromeDriver::new).get();
         //now stop program and run again
