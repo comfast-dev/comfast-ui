@@ -16,16 +16,17 @@ dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("org.slf4j:slf4j-api:2.0.4")
 
-    implementation("dev.comfast:comfast-commons:0.3.4")
+    implementation("dev.comfast:comfast-commons:0.3.5")
     api("org.seleniumhq.selenium:selenium-java:4.8.3")
     implementation("org.seleniumhq.selenium:selenium-java:4.8.3")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.assertj:assertj-core:3.24.2")
 }
 
 tasks.test {
-    maxParallelForks = 1
+    maxParallelForks = 4
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
 }
