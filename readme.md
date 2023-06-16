@@ -4,7 +4,7 @@ Browser Automation library / framework based on Selenium
 ## How to use
 Easiest way to use comfast-ui is to add it as a dependency to your project by: 
 ```groovy
-testImplementation("dev.comfast:comfast-ui:0.2.4")
+testImplementation("dev.comfast:comfast-ui:0.2.5")
  // Junit5 is required to run Examples
 testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
 ```
