@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class AttributesTest {
     @BeforeAll
     public static void init() {
-        new BrowserContent().openResourceFile("integration-test-page.html");
+        new BrowserContent().openResourceFile("test.html");
     }
 
     @Test void textAndHtml() {
