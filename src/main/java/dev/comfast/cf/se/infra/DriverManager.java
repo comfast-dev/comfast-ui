@@ -27,7 +27,7 @@ import static java.lang.Thread.currentThread;
  * Manage instances of WebDriver
  */
 public class DriverManager {
-    private static final TempFile sessionCache = new TempFile("dev.comfast/driverSessionCache.txt");
+    private static final TempFile sessionCache = new TempFile("dev.comfast/driverSessionCache.csv");
     /**
      * Comes from:
      * <li> previous runs (thorough cache file)
@@ -41,26 +41,9 @@ public class DriverManager {
     }
 
     public RemoteWebDriver getDriver() {
-        // algoritm for multi-process communication:
-        // is in ThreadLocal -> return current driver
-        // read file,
-        //   foreach(freeDrivers)
-        //     lock first free driver line + add pid+tid
-        //     if works -> add to ThreadLocal -> return driver
-        //     else -> set dead status in file
-        //
-        // if loop didn't found driver
-        // run new driver
-        // lock end of file + add at the end
-
-
         //todo ReentrantReadWriteLock for file
         // https://medium.com/analytics-vidhya/advanced-locking-in-java-reentrant-read-write-lock-b40fce0833de
         // https://www.geeksforgeeks.org/reentrantreadwritelock-class-in-java/
-
-
-
-
 
         if(usedDrivers.get(currentThread()) == null) {
 //            updateFreeDrivers();

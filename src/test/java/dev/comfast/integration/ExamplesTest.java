@@ -1,7 +1,6 @@
 package dev.comfast.integration;
 import dev.comfast.cf.CfApi;
 import dev.comfast.cf.CfLocator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static dev.comfast.cf.CfApi.$;
@@ -40,7 +39,7 @@ class ExamplesTest {
 
         var wiki = new WikiPage();
 
-        open(wiki.url);
+        open(wiki.url); // browser opens just now
         wiki.italianoLink.click();
 
         assertEquals("https://it.wikipedia.org/wiki/Pagina_principale", CfApi.getDriver().getCurrentUrl());
@@ -129,19 +128,17 @@ class ExamplesTest {
             locatorWithInvalidPart.getText();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            //this code will throw exception with message:
-            //Wait failed after 300ms, tried 4 times.Last error:
-            //Find Element Failed at index: 3 ->
-            //  settings-ui >> settings-main >> settings-basic-page >> settings-section[section=invalid] >>
-            //  settings-downloads-page >> #locationLabel
-            //                                                         ^
-            //                                                         NoSuchElementException
+            // this code will throw exception with message:
+            // Wait failed after 300ms, tried 4 times.Last error:
+            // Find Element Failed at index: 3 ->
+            //   settings-ui >> settings-main >> settings-basic-page >> settings-section[section=invalid] >> settings-downloads-page >> #locationLabel
+            //                                                          ^
+            //                                                          NoSuchElementException
             //
-            //Error details:
-            //org.openqa.selenium.NoSuchElementException: no such element...
+            // Error details:
+            // org.openqa.selenium.NoSuchElementException: no such element...
 
             assertNotNull(e.getMessage());
-
         }
     }
 }
