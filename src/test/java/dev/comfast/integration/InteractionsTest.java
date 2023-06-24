@@ -1,43 +1,41 @@
 package dev.comfast.integration;
 import dev.comfast.cf.common.utils.BrowserContent;
-import org.assertj.core.api.Assertions;
+import dev.comfast.cf.common.utils.Tracer;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.Actions;
 
 import static dev.comfast.cf.CfApi.$;
+import static dev.comfast.cf.CfApi.driverEvents;
+import static dev.comfast.cf.CfApi.getDriver;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InteractionsTest {
-    private static BrowserContent content;
-
     @BeforeAll
     public static void init() {
-        content = new BrowserContent();
+        new BrowserContent().openResourceFile("test.html");
     }
 
     @Test void click() {
-        content.setBody("<button onclick='document.querySelector(`input`).value += `a`'>Add letter</button><input>");
+        var btn = $("#clicker button");
+        var count = $("#clicker span");
 
-        $("button").click();
-        assertEquals("a", $("input").getValue());
+        assertThat(count.getText()).isEqualTo("0");
 
-        $("button").click();
-        assertEquals("aa", $("input").getValue());
+        btn.click();
+        btn.click();
+        btn.click();
+        assertThat(count.getText()).isEqualTo("3");
     }
 
     @Test void focusAndHover() {
-        content.setStyle("button { color: black }" +
-                         "button:hover { color: blue }" +
-                         "button:focus { color: red }")
-            .setBody("<button id='one'>One</button>" +
-                     "<button id='two'>Two</button>" +
-                     "<button id='three'>Three</button>");
-
-        var one = $("#one");
-        var two = $("#two");
-        var three = $("#three");
+        var one = $("#focusAndHover #one");
+        var two = $("#focusAndHover #two");
+        var three = $("#focusAndHover #three");
 
         one.hover();
         two.focus();
@@ -49,27 +47,69 @@ class InteractionsTest {
     }
 
     @Test void dragAndDrop() {
-        content.setBody("<input type=range min=0 max=100 value=50><button>Hover to Me</button>");
-        var input = $("input");
-        assertEquals("50", input.getValue());
-        $("input").dragTo($("button"));
+        var div1 = $("#dragAndDrop #div1");
+        var div2 = $("#dragAndDrop #div2");
+        var dragMe = $("#dragMe");
+        var dragMeParent = $("#dragMe >> ..");
 
-        assertEquals("100", input.getValue(), "Drag should change value to 100");
+        //stabilize
+        if(dragMeParent.getAttribute("id").equals("div2")) dragMe.dragTo(div1);
+
+        dragMe.dragTo(div2);
+        assertThat(dragMeParent.getAttribute("id")).isEqualTo("div2");
+
+        dragMe.dragTo(div1);
+        assertThat(dragMeParent.getAttribute("id")).isEqualTo("div1");
+    }
+
+    /**
+     * Output:
+     * - See line 4 Selenium Actions take: 44.4s
+     * <pre>
+     * AfterEvent findElement([css selector, #dragAndDrop div:empty]) (11.3ms)
+     * AfterEvent findElement([css selector, #dragAndDrop #dragMe]) (10.1ms)
+     * AfterEvent findElement([xpath, //*[@id='dragMe']/..]) (10.6ms)
+     * AfterEvent actions([[org.openqa.selenium.interactions.Sequence@6629ad09]]) (44.4s)
+     * AfterEvent getElementAttribute([65338F44E25AD9EC97055D210DFBFBD7_element_23, id]) (25.7ms)
+     * Expecting actual:
+     *   "dragAndDrop"
+     * to start with:
+     *   "div"
+     * </pre>
+     */
+    @Disabled("Native WebDriver Actions does not work fine")
+    @Test void webdriverDragAndDrop() {
+        //assign tracer
+        driverEvents.addListener("tracer", new Tracer());
+        var div = getDriver().findElement(By.cssSelector("#dragAndDrop div:empty"));
+        var dragMe = getDriver().findElement(By.cssSelector("#dragAndDrop #dragMe"));
+        var dragMeParent = getDriver().findElement(By.xpath("//*[@id='dragMe']/.."));
+
+        new Actions(getDriver())
+            .dragAndDrop(dragMe, div)
+            .perform();
+
+        assertThat(dragMeParent.getAttribute("id")).startsWith("div");
+
+        driverEvents.removeListener("tracer");
     }
 
     @Test void type() {
-        content.setBody("<input>");
-        var input = $("input");
-        input.type("abc\n");
+        final String TEXT = "xyz";
+        var el = $("input");
 
-        assertEquals("abc", input.getValue());
+        el.clear();
+        el.type(TEXT + "\n");
+
+        assertEquals(TEXT, el.getValue());
         //todo more complicated features like .type("{Backspace+ABC}")
     }
 
     @Test void equalsTest() {
-        content.setBody("<button></button>");
-        var button = $("button");
+        var button1 = $("button");
         var button2 = $("button");
-        assertThat(button).isEqualTo(button2);
+        var input = $("input");
+        assertThat(button1).isEqualTo(button2);
+        assertThat(button1).isNotEqualTo(input);
     }
 }

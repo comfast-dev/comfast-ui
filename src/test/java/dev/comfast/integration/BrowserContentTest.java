@@ -8,7 +8,7 @@ class BrowserContentTest {
     @Test void trustedHtmlTest() {
         try {
             Assertions.assertThatCode(() -> {
-                CfApi.open("brave://settings/privacy");
+                CfApi.open("chrome://settings/privacy");
                 new BrowserContent().setBody("<ul><li>xxx</li></ul>");
             }).doesNotThrowAnyException();
         } finally {

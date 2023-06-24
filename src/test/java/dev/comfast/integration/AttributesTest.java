@@ -1,6 +1,5 @@
 package dev.comfast.integration;
 import dev.comfast.cf.common.utils.BrowserContent;
-import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -12,56 +11,39 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AttributesTest {
-    private static BrowserContent content;
-
     @BeforeAll
     public static void init() {
-        content = new BrowserContent();
+        new BrowserContent().openResourceFile("test.html");
     }
 
     @Test void textAndHtml() {
-        @Language("HTML") final String TEST_HTML = "<p> Hello <span>World \n</span>\n !</p>";
+        var p = $("#textAndHtml p");
+            assertEquals("Hello World !", p.getText(), "default");
+            assertEquals("Hello World !", p.getAttribute("innerText"), "innerText");
+            assertEquals(" Hello World\n !", p.getAttribute("textContent"), "textContent");
+            assertEquals(" Hello <span>World</span>\n !", p.innerHtml(), "innerHTML");
+            assertEquals("<p> Hello <span>World</span>\n !</p>", p.outerHtml(), "outerHTML");
 
-        content.setBody(TEST_HTML);
-
-        var p = $("p");
-        assertAll(
-            () -> assertEquals("Hello World !", p.getText(), "default"),
-            () -> assertEquals("Hello World !", p.getAttribute("innerText"), "innerText"),
-            () -> assertEquals(" Hello World \n\n !", p.getAttribute("textContent"), "textContent"),
-            () -> assertEquals(" Hello <span>World \n</span>\n !", p.innerHtml(), "innerHTML"),
-            () -> assertEquals(TEST_HTML, p.outerHtml(), "outerHTML")
-        );
     }
 
     @Test void isDisplayed() {
-        content.setBody(
-            "<p id='default'>1</p>" +
-            "<p id='displayNone' style='display:none'>2</p>" +
-            "<p id='visibilityHidden' style='display:block; visibility:hidden'>3</p>" +
-            "<p id='opacity01' style='opacity: 0.1'>4</p>" +
-            "<p id='opacity0' style='opacity: 0'>5</p>"
-        );
-
         assertAll(
             () -> assertTrue($("#default").isDisplayed(), "default"),
             () -> assertFalse($("#displayNone").isDisplayed(), "display:none"),
             () -> assertFalse($("#visibilityHidden").isDisplayed(), "visibility:hidden"),
-            () -> assertTrue($("#opacity01").isDisplayed(), "opacity > 0")
+            () -> assertTrue($("#opacity001").isDisplayed(), "opacity > 0"),
 
-            // playwright return true, selenium: false
-//            () -> assertFalse($("#opacity0").isDisplayed(), "opacity == 0")
+            //playwright returns true, selenium false here
+            () -> assertFalse($("#opacity0").isDisplayed(), "opacity == 0")
         );
     }
 
     @Test void attribute() {
-        content.setBody("<input type='text' value='' required>");
-
-        var input = $("input");
+        var input = $(".text input");
         assertAll("HTML / JS Attributes",
             () -> assertEquals("text", input.getAttribute("type")),
             () -> assertEquals("", input.getAttribute("value")),
-            () -> assertEquals("true", input.getAttribute("required")),
+            () -> assertNull(input.getAttribute("required")),
             () -> assertNull(input.getAttribute("notattribute")),
 
             // JS attributes
@@ -72,7 +54,6 @@ class AttributesTest {
     }
 
     @Test void getCssValueTest() {
-        content.setBody("<h1>Hello</h1>");
         assertEquals("rgba(0, 0, 0, 0)", $("h1").getCssValue("background-color"));
     }
 
@@ -85,12 +66,7 @@ class AttributesTest {
 //    }
 
     @Test void value() {
-        content.setBody("<input type='text' value='abc' required>" +
-                        "<span>abc</span>");
-
-        assertEquals("abc", $("input").getValue());
-
-        assertNull($("span").getValue());
-        assertEquals("abc", $("span").getText());
+        assertEquals("abc", $(".text_abc input").getValue());
+        assertNull($(".text_abc label").getValue());
     }
 }

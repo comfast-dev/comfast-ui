@@ -5,13 +5,8 @@ import lombok.SneakyThrows;
 import org.intellij.lang.annotations.Language;
 import org.openqa.selenium.JavascriptException;
 
-import java.io.FileNotFoundException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import static dev.comfast.cf.CfApi.open;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static dev.comfast.util.Utils.readResourceFile;
 
 /**
  * Utility class to write browser html / css / js
@@ -24,11 +19,8 @@ public class BrowserContent {
      */
     @SneakyThrows
     public void openResourceFile(String resourcePath) {
-        URL resource = getClass().getClassLoader().getResource(resourcePath);
-        if(resource == null) throw new FileNotFoundException("Resource not found: " + resourcePath);
-
         var tempFile = new TempFile("comfast-unit-tests/" + resourcePath);
-        tempFile.write(Files.readString(Path.of(resource.toURI()), UTF_8));
+        tempFile.write(readResourceFile(resourcePath));
 
         open(tempFile.file.toUri().toURL().toString());
     }

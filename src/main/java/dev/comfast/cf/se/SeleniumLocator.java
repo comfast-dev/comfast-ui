@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static dev.comfast.cf.se.infra.DriverSource.getDriver;
+import static dev.comfast.util.Utils.readResourceFile;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -66,12 +67,18 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         action(() -> new Actions(getDriver()).moveToElement(target).perform(), "hover");
     }
 
+    /**
+     * Uses javaScript implementation. Works faster and more reliable
+     */
     @Override public void dragTo(CfLocator target) {
         action(() -> {
-            WebElement fromEl = find();
             WebElement targetEl = ((SeleniumLocator) target).find();
+            doExecuteJs(readResourceFile("js/dragAndDrop.js") +
+                "executeDragAndDrop(el, arguments[0])",
+                targetEl);
 
-            new Actions(getDriver()).clickAndHold(fromEl).release(targetEl).perform();
+// Selenium native implementation (causes problems)
+// new Actions(getDriver()).dragAndDrop(find(), targetEl).perform();
         }, "dragTo", target);
     }
 
@@ -111,6 +118,9 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
                 .map(func).collect(toList()), "map");
     }
 
+    /**
+     * Execute JS, where el ===> current element
+     */
     protected Object doExecuteJs(String script, Object... args) {
         WebElement webElement = find();
 
@@ -119,11 +129,11 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         System.arraycopy(args, 0, allArgs, 0, args.length);
         allArgs[args.length] = webElement;
 
+        //noinspection JSUnusedLocalSymbols
         return getDriver().executeScript("const el = arguments[" + args.length + "];\n" + script, allArgs);
     }
 
     protected WebElement find() {
-        //find event
         return finder.find();
     }
 
