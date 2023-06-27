@@ -1,14 +1,14 @@
 package dev.comfast.integration;
 import dev.comfast.cf.CfLocator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import static dev.comfast.cf.CfApi.$;
 import static dev.comfast.cf.CfApi.open;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@EnabledIfSystemProperty(named = "allTests", matches = "true")
 class UtilsTest {
-    @Disabled("problems with TrustedHTML")
     @Test void clearBrowserDataTest() {
         open("chrome://settings/clearBrowserData");
 

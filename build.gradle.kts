@@ -33,7 +33,7 @@ tasks.test {
 tasks.register<Test>("allTests") {
     useJUnitPlatform()
     systemProperty("file.encoding", "UTF-8")
-    systemProperty("all.tests", "true")
+    systemProperty("allTests", "true")
 }
 
 /// COMMON

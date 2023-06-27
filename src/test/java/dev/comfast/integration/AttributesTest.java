@@ -18,12 +18,11 @@ class AttributesTest {
 
     @Test void textAndHtml() {
         var p = $("#textAndHtml p");
-            assertEquals("Hello World !", p.getText(), "default");
-            assertEquals("Hello World !", p.getAttribute("innerText"), "innerText");
-            assertEquals(" Hello World\n !", p.getAttribute("textContent"), "textContent");
-            assertEquals(" Hello <span>World</span>\n !", p.innerHtml(), "innerHTML");
-            assertEquals("<p> Hello <span>World</span>\n !</p>", p.outerHtml(), "outerHTML");
-
+        assertEquals("Hello World !", p.getText(), "default");
+        assertEquals("Hello World !", p.getAttribute("innerText"), "innerText");
+        assertEquals(" Hello World\n        !", p.getAttribute("textContent"), "textContent");
+        assertEquals(" Hello <span>World</span>\n        !", p.innerHtml(), "innerHTML");
+        assertEquals("<p> Hello <span>World</span>\n        !</p>", p.outerHtml(), "outerHTML");
     }
 
     @Test void isDisplayed() {
@@ -31,7 +30,7 @@ class AttributesTest {
             () -> assertTrue($("#default").isDisplayed(), "default"),
             () -> assertFalse($("#displayNone").isDisplayed(), "display:none"),
             () -> assertFalse($("#visibilityHidden").isDisplayed(), "visibility:hidden"),
-            () -> assertTrue($("#opacity001").isDisplayed(), "opacity > 0"),
+            () -> assertTrue($("#opacity01").isDisplayed(), "opacity > 0"),
 
             //playwright returns true, selenium false here
             () -> assertFalse($("#opacity0").isDisplayed(), "opacity == 0")
