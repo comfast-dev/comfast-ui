@@ -1,19 +1,13 @@
 package dev.comfast.integration.se;
-import dev.comfast.cf.CfLocator;
 import dev.comfast.cf.common.errors.ElementFindFail;
 import dev.comfast.cf.common.utils.BrowserContent;
-import dev.comfast.experimental.events.EventListener;
-import dev.comfast.experimental.events.model.AfterEvent;
 import dev.comfast.util.waiter.WaitTimeout;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.InvalidSelectorException;
-import org.openqa.selenium.remote.Command;
 
 import static dev.comfast.cf.CfApi.$;
-import static dev.comfast.cf.CfApi.driverEvents;
-import static dev.comfast.cf.CfApi.locatorEvents;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ErrorHandlingTest {

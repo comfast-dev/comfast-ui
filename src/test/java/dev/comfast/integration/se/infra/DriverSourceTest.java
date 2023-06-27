@@ -31,7 +31,6 @@ class DriverSourceTest {
 
     @SneakyThrows
     @Test
-    @Disabled("crash other tests, not implemented")
     void autoStartDriverOnMultipleThreads() {
         System.setProperty("cf.browser.reconnect", "false");
         System.setProperty("cf.browser.autoClose", "true");
