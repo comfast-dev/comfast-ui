@@ -13,4 +13,8 @@ public class FoundElement extends SeleniumLocator {
     @Override protected WebElement find() {
         return foundWebElement;
     }
+
+    @Override public boolean equals(Object o) {
+        return foundWebElement.equals(o);
+    }
 }

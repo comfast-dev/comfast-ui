@@ -1,48 +1,60 @@
 package dev.comfast.integration;
+import dev.comfast.cf.CfLocator;
 import dev.comfast.cf.common.utils.BrowserContent;
-import org.junit.jupiter.api.BeforeEach;
+import dev.comfast.util.time.Stopwatch;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 
 import static dev.comfast.cf.CfApi.$;
+import static dev.comfast.cf.CfApi.getDriver;
 import static dev.comfast.util.Utils.withSystemProp;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class TimeoutTest {
-    static final BrowserContent content = new BrowserContent();
+    private final CfLocator start = $("#countdown button[name=start]");
+    private final CfLocator timeout = $("#countdown input[name=timeout]");
 
-    @BeforeEach
-    void addScript() {
-        content.clearAll();
-        //noinspection JSUnusedLocalSymbols
-        content.setScriptTag(
-          "function insertElement(parentSelector, elementTag, elementText) {\n" +
-          "    const element = document.createElement(elementTag)\n" +
-          "    element.append(elementText)\n" +
-          "    document.querySelector(parentSelector).append(element)\n" +
-          "}\n" +
-          "function setTimer(timerElement, timerTimeoutMs, endText, endCallback) {\n" +
-          "     const endTime = Date.now() + timerTimeoutMs;\n" +
-          "     const interval = setInterval(() => { timerElement.innerText = endTime - Date.now()}, 50)\n" +
-          "     setTimeout(() => { clearInterval(interval); timerElement.innerText = endText } , timerTimeoutMs)\n" +
-          "     console.log(typeof endCallback)\n" +
-          "     if (typeof endCallback === 'function') setTimeout(endCallback, timerTimeoutMs)\n" +
-          " }\n"
-            );
-        content.setBody(
-            "<button id='countdown' onclick='" +
-            "setTimer(this, 300, `Restart`, () => insertElement(`body`, `p`, `Wait has ended`))" +
-            "'>Start countdown</button>"
-            );
+    @BeforeAll static void openTestPage() {
+        new BrowserContent().openResourceFile("test.html");
     }
 
-    @Test void autoWaitShouldWaitBeforeClick() {
+    @Test void autoWaitForInteractWithElement() {
         withSystemProp("cf.timeoutMs", () -> {
             System.setProperty("cf.timeoutMs", "600");
 
-            assertThatCode(() -> {
-                $("button#countdown").click();
-                $("//p[contains(.,'Wait has ended')]").click();
-            }).doesNotThrowAnyException();
+            //when
+            timeout.setValue("300");
+            start.click();
+
+            // native selenium will throw exception
+            assertThatThrownBy(() -> getDriver().findElement(By.cssSelector("#countdown input[name=timeout]"))
+                .sendKeys("abc"))
+                .hasMessageContaining("element not interactable");
+
+            // CfLocator will wait
+            assertThatCode(() -> timeout.type("def")).doesNotThrowAnyException();
+            assertThat(timeout.getValue()).endsWith("def");
+        });
+    }
+
+    @Test void autoWaitTimeoutFail() {
+        withSystemProp("cf.timeoutMs", () -> {
+            final long TIMEOUT = 200;
+            System.setProperty("cf.timeoutMs", String.valueOf(TIMEOUT));
+
+            //when
+            timeout.setValue("500");
+            start.click();
+
+            // code will fail after 200ms
+            var time = Stopwatch.measure(() -> assertThatThrownBy(
+                () -> timeout.type("def"))
+                .hasMessageContaining("Wait failed after 200ms"));
+
+            assertThat(time.getMillis()).isGreaterThanOrEqualTo(TIMEOUT);
         });
     }
 }

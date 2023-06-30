@@ -3,16 +3,14 @@ import dev.comfast.cf.common.utils.BrowserContent;
 import org.junit.jupiter.api.Test;
 
 import static dev.comfast.cf.CfApi.$;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ShadowRootsTest {
-    private final BrowserContent browserContent = new BrowserContent();
 
     @Test void openShadowDom() {
-        browserContent.openResourceFile("shadow-dom.html");
+        new BrowserContent().openResourceFile("test.html");
 
-        var txt = $("//body//article/p[3] >> span").getText();
-
-        assertEquals("Words: 212", txt);
+        assertThat($("my-div >> h3").getText()).isEqualTo("Hello from shadow");
+        assertThat($("my-div >> my-div >> h5").getText()).isEqualTo("We need go deeper");
     }
 }

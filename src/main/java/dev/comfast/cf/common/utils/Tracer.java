@@ -2,29 +2,63 @@ package dev.comfast.cf.common.utils;
 import dev.comfast.experimental.events.EventListener;
 import dev.comfast.experimental.events.model.AfterEvent;
 import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.Response;
+
+import java.util.Map;
+
+import static dev.comfast.rgx.RgxApi.rgx;
+import static dev.comfast.util.Utils.trimString;
+import static java.lang.String.format;
 
 /**
  * Print out all internal WebDriver events with its times.
  * How to use: {@code CfApi.driverEvents.addListener("tracer", new Tracer())}
  * <p>Example console output:</p>
  * <pre>
- * AfterEvent findElement([css selector, #clicker span]) (11.1ms)
- * AfterEvent getElementAttribute([ABE324DFBAAD5DA9864B1CF4F74ACCB2_element_132, innerText]) (23.1ms)
- * AfterEvent findElement([css selector, #clicker button]) (9.63ms)
- * AfterEvent clickElement([ABE324DFBAAD5DA9864B1CF4F74ACCB2_element_133]) (28.5ms)
- * AfterEvent findElement([css selector, #clicker button]) (8.36ms)
- * AfterEvent clickElement([ABE324DFBAAD5DA9864B1CF4F74ACCB2_element_133]) (24.7ms)
- * AfterEvent findElement([css selector, #clicker button]) (8.75ms)
- * AfterEvent clickElement([ABE324DFBAAD5DA9864B1CF4F74ACCB2_element_133]) (22.8ms)
+ * findElement               | my-div                                   | success              | 10.8ms
+ * findChildElement          | _element_67 >> h3                        | no such element      | 13.7ms
+ * executeScript             | return arguments[0].shadowRoot           | success              | 10.7ms
+ * findElementFromShadowRoot | _element_68 >> h3                        | success              | 9.96ms
  * </pre>
  */
 public class Tracer implements EventListener<Command> {
-
     @Override public void after(AfterEvent<Command> event) {
-        String str = event.toString().replaceAll("\\s+", " ");
-        if(str.length() > 150) {
-            str = str.substring(0, 140) + event.time;
+        System.out.println(formatLogMessage(event));
+    }
+
+    protected String formatLogMessage(AfterEvent<Command> event) {
+        return format("%-25s | %-40s | %-20s | %s%n",
+            event.actionName,
+            trimString(formatPayload(event.context), 40),
+            ((Response) event.result).getState(),
+            event.time);
+    }
+
+    /**
+     * @param context Selenium command
+     * @return Command payload String
+     */
+    private Object formatPayload(Command context) {
+        //noinspection unchecked
+        Map<String, Object> params = (Map<String, Object>) context.getParameters();
+
+        if(params.containsKey("value")) {
+            if(params.containsKey("id")) return trimId(params.get("id")) + params.get("value");
+            if(params.containsKey("shadowId")) return trimId(params.get("shadowId")) + params.get("value");
+            return params.get("value");
         }
-        System.out.println(str);
+        if(params.containsKey("name")) return trimId(params.get("id")) + params.get("name");
+        if(params.containsKey("script")) return params.get("script");
+
+        return "";
+    }
+
+    /**
+     * @return fragment of Selenium ID like: '_element_22'
+     */
+    private String trimId(Object seleniumId) {
+        String match = rgx("(_element_\\d+)$").match(seleniumId.toString()).getOrElse("");
+
+        return match.isEmpty() ? "" : match + " >> ";
     }
 }

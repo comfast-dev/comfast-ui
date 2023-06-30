@@ -83,7 +83,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
     }
 
     @Override public void setValue(String value) {
-        action(() -> doExecuteJs("el.setValue(arguments[0])", value), "setValue:", value);
+        action(() -> doExecuteJs("el.value = arguments[0]", value), "setValue:", value);
     }
 
     @Override public void setChecked(boolean state) {
@@ -119,7 +119,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
     }
 
     /**
-     * Execute JS, where el ===> current element
+     * Execute JS, where variable: el ===> current element
      */
     protected Object doExecuteJs(String script, Object... args) {
         WebElement webElement = find();
