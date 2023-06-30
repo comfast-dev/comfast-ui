@@ -10,25 +10,20 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ShouldTest {
-    private static BrowserContent content;
-
-    @BeforeAll
-    public static void init() {
-        content = new BrowserContent();
+    @BeforeAll static void init() {
+        new BrowserContent().openResourceFile("test.html");
     }
 
     @Test void shouldAppearTest() {
-        content.setBody(
-            "<h1>Hello</h1>"+
-            "<h2 style='display: none'>hidden subtitle</h2>"
-            );
+        var defaultElement = $("#default");
+        var displayNoneElement = $("#displayNone");
 
-        assertThatCode(() -> $("h1").should(appear)).doesNotThrowAnyException();
-        assertThatCode(() -> $("h2").should(disappear)).doesNotThrowAnyException();
+        assertThatCode(() -> defaultElement.should(appear)).doesNotThrowAnyException();
+        assertThatCode(() -> displayNoneElement.should(disappear)).doesNotThrowAnyException();
 
-        assertThatThrownBy(() -> $("h1").should(disappear))
-            .hasMessageContaining("Condition 'disappear' failed for element: h1");
-        assertThatThrownBy(() -> $("h2").should(appear))
-            .hasMessageContaining("Condition 'appear' failed for element: h2");
+        assertThatThrownBy(() -> defaultElement.should(disappear))
+            .hasMessageContaining("Condition 'disappear' failed for element:");
+        assertThatThrownBy(() -> displayNoneElement.should(appear))
+            .hasMessageContaining("Condition 'appear' failed for element:");
     }
 }
