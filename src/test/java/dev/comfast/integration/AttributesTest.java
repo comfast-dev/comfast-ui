@@ -20,19 +20,27 @@ class AttributesTest {
         var p = $("#textAndHtml p");
         assertEquals("Hello World !", p.getText(), "default");
         assertEquals("Hello World !", p.getAttribute("innerText"), "innerText");
-        assertEquals(" Hello World\n        !", p.getAttribute("textContent"), "textContent");
-        assertEquals(" Hello <span>World</span>\n        !", p.innerHtml(), "innerHTML");
-        assertEquals("<p> Hello <span>World</span>\n        !</p>", p.outerHtml(), "outerHTML");
+        assertEquals(" Hello World\n    !", p.getAttribute("textContent"), "textContent");
+        assertEquals(" Hello <span>World</span>\n    !", p.innerHtml(), "innerHTML");
+        assertEquals("<p> Hello <span>World</span>\n    !</p>", p.outerHtml(), "outerHTML");
     }
 
     @Test void isDisplayed() {
         assertAll(
+            () -> assertTrue($("#default").exists()),
             () -> assertTrue($("#default").isDisplayed(), "default"),
+
+            () -> assertTrue($("#displayNone").exists()),
             () -> assertFalse($("#displayNone").isDisplayed(), "display:none"),
-            () -> assertFalse($("#visibilityHidden").isDisplayed(), "visibility:hidden"),
+
+            () -> assertTrue($("#hidden").exists()),
+            () -> assertFalse($("#hidden").isDisplayed(), "visibility:hidden"),
+
+            () -> assertTrue($("#opacity01").exists()),
             () -> assertTrue($("#opacity01").isDisplayed(), "opacity > 0"),
 
             //playwright returns true, selenium false here
+            () -> assertTrue($("#opacity0").exists()),
             () -> assertFalse($("#opacity0").isDisplayed(), "opacity == 0")
         );
     }
@@ -42,6 +50,7 @@ class AttributesTest {
         assertAll("HTML / JS Attributes",
             () -> assertEquals("text", input.getAttribute("type")),
             () -> assertEquals("", input.getAttribute("value")),
+            () -> assertNull(input.getAttribute("required")),
             () -> assertNull(input.getAttribute("required")),
             () -> assertNull(input.getAttribute("notattribute")),
 

@@ -30,14 +30,16 @@ public class FixedSessionExecutor extends HttpCommandExecutor {
     public Response execute(Command command) throws IOException {
         var event = new BeforeEvent<>(command, command.getName(), command.getParameters().values());
         driverEvents.notifyBefore(event);
+        var result = doExecute(command);
+        driverEvents.notifyAfter(event.passed(result));
 
-        try {
-            return command.getName().equals("newSession")
-                   ? mockNewSession()
-                   : super.execute(command);
-        } finally {
-            driverEvents.notifyAfter(event.passed("OK"));
-        }
+        return result;
+    }
+
+    private Response doExecute(Command command) throws IOException {
+        return command.getName().equals("newSession")
+               ? mockNewSession()
+               : super.execute(command);
     }
 
     private Response mockNewSession() {

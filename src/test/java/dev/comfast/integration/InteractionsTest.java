@@ -47,41 +47,23 @@ class InteractionsTest {
     }
 
     @Test void dragAndDrop() {
-        var div1 = $("#dragAndDrop #div1");
-        var div2 = $("#dragAndDrop #div2");
+        var dropZone1 = $("#dragAndDrop div").nth(1);
+        var dropzone2 = $("#dragAndDrop div").nth(2);
         var dragMe = $("#dragMe");
-        var dragMeParent = $("#dragMe >> ..");
+        var currentDropZone = $("#dragMe >> ..");
 
-        //stabilize
-        if(dragMeParent.getAttribute("id").equals("div2")) dragMe.dragTo(div1);
+        dragMe.dragTo(dropzone2);
+        assertThat(currentDropZone.getText()).contains("drop zone 2");
 
-        dragMe.dragTo(div2);
-        assertThat(dragMeParent.getAttribute("id")).isEqualTo("div2");
-
-        dragMe.dragTo(div1);
-        assertThat(dragMeParent.getAttribute("id")).isEqualTo("div1");
+        dragMe.dragTo(dropZone1);
+        assertThat(currentDropZone.getText()).contains("drop zone 1");
     }
 
-    /**
-     * Output:
-     * - See line 4 Selenium Actions take: 44.4s
-     * <pre>
-     * AfterEvent findElement([css selector, #dragAndDrop div:empty]) (11.3ms)
-     * AfterEvent findElement([css selector, #dragAndDrop #dragMe]) (10.1ms)
-     * AfterEvent findElement([xpath, //*[@id='dragMe']/..]) (10.6ms)
-     * AfterEvent actions([[org.openqa.selenium.interactions.Sequence@6629ad09]]) (44.4s)
-     * AfterEvent getElementAttribute([65338F44E25AD9EC97055D210DFBFBD7_element_23, id]) (25.7ms)
-     * Expecting actual:
-     *   "dragAndDrop"
-     * to start with:
-     *   "div"
-     * </pre>
-     */
-    @Disabled("Native WebDriver Actions does not work fine")
+    @Disabled("Native WebDriver Actions Drag&Drop does not work fine")
     @Test void webdriverDragAndDrop() {
         //assign tracer
         driverEvents.addListener("tracer", new Tracer());
-        var div = getDriver().findElement(By.cssSelector("#dragAndDrop div:empty"));
+        var div = getDriver().findElement(By.cssSelector("#dragAndDrop div"));
         var dragMe = getDriver().findElement(By.cssSelector("#dragAndDrop #dragMe"));
         var dragMeParent = getDriver().findElement(By.xpath("//*[@id='dragMe']/.."));
 
