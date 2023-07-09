@@ -8,6 +8,9 @@ import lombok.Getter;
 
 import java.util.function.Function;
 
+/**
+ * Represents a condition that can be checked against a CfLocator.
+ */
 @Builder(toBuilder = true)
 public class ConditionImpl implements Condition {
     @Getter final String name;
@@ -32,29 +35,21 @@ public class ConditionImpl implements Condition {
             CfFoundLocator foundEl = locator.find();
             boolean result = negated ^ testFunc.apply(foundEl);
             if(!result) throw new ConditionFailed(
-                "Condition '%s' failed for element: %s", name, foundEl);
+                "Condition: \"%s\" failed for element: %s", name, foundEl);
         } catch(ElementFindFail e) {
-            if(negated == passIfNotFound) return;
+            if(negated ^ passIfNotFound) return;
             throw new ConditionFailed(
-                "Condition '%s' failed. Element not found:%n%s", e, name, e);
+                "Condition: \"%s\" failed. Element not found:%n%s", e, name, e.getPointer());
         } catch(ConditionFailed e) {
             throw e;
         } catch(Exception e) {
             throw new ConditionFailed(
-                "Condition '%s' failed with exception. %nElement: %s", e, name);
+                "Condition: \"%s\" failed with exception. %nElement: %s", e, name);
         }
     }
 
-    public ConditionImpl negate() {
-        return negate(name.startsWith("not ") ? name.substring(4) : "not " + name);
-    }
-
     public ConditionImpl negate(String newName) {
-        return toBuilder()
-            .name(newName)
-            .passIfNotFound(!passIfNotFound)
-            .negated(!negated)
-            .build();
+        return toBuilder().name(newName).negated(!negated).build();
     }
 
     @Override public String toString() {

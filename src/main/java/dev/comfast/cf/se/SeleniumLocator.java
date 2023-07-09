@@ -118,7 +118,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         return action(() -> finder.findAll().size(), "count");
     }
 
-    @Override public CfLocator nth(int nth) {
+    @Override public CfFoundLocator nth(int nth) {
         return action(() -> new FoundElement(chain, finder.findAll().get(nth - 1)),
             "nth(%d)", nth);
     }
@@ -141,31 +141,26 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         return action(() -> doExecuteJs(script, args), "ececuteJs", script, args);
     }
 
-    @Override public <T> List<T> map(Function<CfLocator, T> func) {
+    @Override public <T> List<T> map(Function<CfFoundLocator, T> func) {
         return action(() -> finder.findAll().stream()
             .map(el -> new FoundElement(chain, el))
             .map(func).collect(toList()), "map");
     }
 
-    @Override public void forEach(Consumer<CfLocator> func) {
+    @Override public void forEach(Consumer<CfFoundLocator> func) {
         action(() -> finder.findAll().stream()
-                .map(el -> new FoundElement(chain, el))
-                .forEach(func), "forEach");
+            .map(el -> new FoundElement(chain, el))
+            .forEach(func), "forEach");
     }
 
     /**
      * Execute JS, where variable: el ===> current element
      */
     protected Object doExecuteJs(String script, Object... args) {
-        WebElement webElement = doFind();
-
-//        allArgs is === [...args, webElement]
-        Object[] allArgs = new Object[args.length + 1];
-        System.arraycopy(args, 0, allArgs, 0, args.length);
-        allArgs[args.length] = webElement;
-
+        var argsWithWebElement = addArgument(args, doFind());
         //noinspection JSUnusedLocalSymbols
-        return getDriver().executeScript("const el = arguments[" + args.length + "];\n" + script, allArgs);
+        return getDriver().executeScript(
+            "const el = arguments[" + args.length + "];\n" + script, argsWithWebElement);
     }
 
     protected WebElement doFind() {
@@ -177,5 +172,15 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         try {
             return Optional.of(doFind());
         } catch(Exception e) {return Optional.empty();}
+    }
+
+    /**
+     * @return new array with added element at the end
+     */
+    private Object[] addArgument(Object[] array, Object addElement) {
+        Object[] newArray = new Object[array.length + 1];
+        System.arraycopy(array, 0, newArray, 0, array.length);
+        newArray[array.length] = addElement;
+        return newArray;
     }
 }

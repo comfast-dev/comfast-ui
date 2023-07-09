@@ -3,6 +3,8 @@ import dev.comfast.cf.CfFoundLocator;
 import dev.comfast.cf.common.selector.SelectorChain;
 import org.openqa.selenium.WebElement;
 
+import static dev.comfast.util.Utils.trimString;
+
 public class FoundElement extends SeleniumLocator implements CfFoundLocator {
     private final WebElement foundWebElement;
 
@@ -17,5 +19,13 @@ public class FoundElement extends SeleniumLocator implements CfFoundLocator {
 
     @Override public boolean equals(Object o) {
         return foundWebElement.equals(o);
+    }
+
+    @Override public String toString() {
+        try {
+            return trimString(outerHtml(), 200);
+        } catch(Exception ex) {
+            return chain + " (not found)";
+        }
     }
 }

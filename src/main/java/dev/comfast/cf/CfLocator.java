@@ -142,15 +142,20 @@ public interface CfLocator {
      * @param <T> mapping result type
      * @return list of mapped values
      */
-    <T> List<T> map(Function<CfLocator, T> func);
-    void forEach(Consumer<CfLocator> func);
+    <T> List<T> map(Function<CfFoundLocator, T> func);
+    /**
+     * Iterate thorough all elements matched by locator
+     *
+     * @param func function, eg. locator -> locator.setValue("abc")
+     */
+    void forEach(Consumer<CfFoundLocator> func);
     /**
      * nth element found by locator
      *
      * @param nth index starting of 1
      * @return CfLocator
      */
-    CfLocator nth(int nth);
+    CfFoundLocator nth(int nth);
     /**
      * Wait for given function return truth value (true, 1, non null object etc.)
      * <pre>{@code
@@ -162,9 +167,12 @@ public interface CfLocator {
      */
     void waitFor(Function<CfLocator, Object> func, long timeoutMs);
     /**
-     * Wait for given condition
+     * Wait for given condition match
      */
     void should(Condition condition);
+    /**
+     * Wait fo given condition not match
+     */
     default void shouldNot(Condition condition) {
         should(not(condition));
     }

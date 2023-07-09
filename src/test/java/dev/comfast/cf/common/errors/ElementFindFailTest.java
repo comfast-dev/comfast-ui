@@ -22,7 +22,7 @@ class ElementFindFailTest {
             "java.lang.RuntimeException: oh no, failed\n",
             fail.getMessage());
         assertEquals(index, fail.getFailIndex());
-        assertEquals(chain, fail.getSelectorChain());
+        assertEquals(chain, fail.getChain());
         assertEquals(cause, fail.getCause());
     }
 }

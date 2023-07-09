@@ -14,7 +14,7 @@ import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Measure all low level WebDriver Events and print out statistics.
+ * Measure all Events and able to print out statistics. Low cpu/memory overhead.
  */
 @RequiredArgsConstructor
 public class EventStats<T> implements EventListener<T> {
