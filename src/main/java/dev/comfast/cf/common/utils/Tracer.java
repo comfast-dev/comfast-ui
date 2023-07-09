@@ -23,7 +23,7 @@ import static java.lang.String.format;
  */
 public class Tracer implements EventListener<Command> {
     @Override public void after(AfterEvent<Command> event) {
-        System.out.println(formatLogMessage(event));
+        System.out.print(formatLogMessage(event));
     }
 
     protected String formatLogMessage(AfterEvent<Command> event) {
@@ -54,7 +54,7 @@ public class Tracer implements EventListener<Command> {
     }
 
     /**
-     * @return fragment of Selenium ID like: '_element_22'
+     * @return human-readable fragment of Selenium ID like: '_element_22'
      */
     private String trimId(Object seleniumId) {
         String match = rgx("(_element_\\d+)$").match(seleniumId.toString()).getOrElse("");

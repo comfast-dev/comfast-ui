@@ -4,7 +4,6 @@ import dev.comfast.cf.CfFoundLocator;
 import dev.comfast.cf.CfLocator;
 import dev.comfast.cf.common.conditions.Condition;
 import dev.comfast.cf.common.selector.SelectorChain;
-import dev.comfast.experimental.events.model.BeforeEvent;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
@@ -15,7 +14,6 @@ import java.util.function.Function;
 
 import static dev.comfast.cf.CfApi.config;
 import static dev.comfast.cf.CfApi.getWaiter;
-import static dev.comfast.cf.CfApi.locatorEvents;
 import static dev.comfast.cf.se.infra.DriverSource.getDriver;
 import static dev.comfast.util.Utils.readResourceFile;
 import static java.lang.String.format;
@@ -132,9 +130,11 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
             c.timeoutMs(config.getLong("cf.timeoutMs"))
                 .description("should " + condition));
 
-        locatorEvents.action(
-            new BeforeEvent<>(this, "should " + condition),
-            () -> waiter.waitFor(() -> condition.expect(this)));
+        action(() -> condition.expect(this), "should " + condition);
+
+//        locatorEvents.action(
+//            new BeforeEvent<>(this, "should " + condition),
+//            () -> waiter.waitFor(() -> condition.expect(this)));
     }
 
     @Override public Object executeJs(String script, Object... args) {

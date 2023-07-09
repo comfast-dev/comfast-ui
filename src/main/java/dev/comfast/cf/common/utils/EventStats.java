@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.LongSummaryStatistics;
 
+import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
@@ -33,13 +34,14 @@ public class EventStats<T> implements EventListener<T> {
         data.computeIfAbsent(key, k -> new LongSummaryStatistics()).accept(nanos);
     }
 
-    public void printStats() {
+    public String printStats() {
         List<List<String>> stats = data.entrySet().stream()
             .sorted(comparingLong(a -> a.getValue().getSum()))
             .map(entry -> formatStats(entry.getKey(), entry.getValue()))
             .collect(toList());
 
-        System.out.printf("%s:%n%s%n%s%n%n", name,
+        if(stats.isEmpty()) return name + " - EMPTY STATS";
+        return format("%s:%n%s%n%s%n%n", name,
             "=".repeat(65),
             new TerminalGenerator(" | ").table(
                 List.of("actionName", "count", "min", "max", "avg", "total"), stats));

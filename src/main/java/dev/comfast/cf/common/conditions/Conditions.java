@@ -94,12 +94,21 @@ public class Conditions {
     }
 
     /**
-     * @return Condition that will pass if element have given text
+     * @return Condition that will pass if element have exact given text
      * @see CfLocator#getText()
      */
     public static Condition hasText(String expectedText) {
         return condition(format("has text: '%s'", expectedText),
             el -> flatText(el.getText()).equals(flatText(expectedText)));
+    }
+
+    /**
+     * @return Condition that will pass if element have exact given text
+     * @see CfLocator#getText()
+     */
+    public static Condition containText(String expectedText) {
+        return condition(format("contain text: '%s'", expectedText),
+            el -> flatText(el.getAttribute("textContent")).contains(flatText(expectedText)));
     }
 
     /**

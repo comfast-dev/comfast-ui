@@ -27,21 +27,21 @@ class AttributesTest {
 
     @Test void isDisplayed() {
         assertAll(
-            () -> assertTrue($("#default").exists()),
-            () -> assertTrue($("#default").isDisplayed(), "default"),
+            () -> assertTrue($("#isDisplayed .default").exists()),
+            () -> assertTrue($("#isDisplayed .default").isDisplayed(), "default"),
 
-            () -> assertTrue($("#displayNone").exists()),
-            () -> assertFalse($("#displayNone").isDisplayed(), "display:none"),
+            () -> assertTrue($("#isDisplayed .displayNone").exists()),
+            () -> assertFalse($("#isDisplayed .displayNone").isDisplayed(), "display:none"),
 
-            () -> assertTrue($("#hidden").exists()),
-            () -> assertFalse($("#hidden").isDisplayed(), "visibility:hidden"),
+            () -> assertTrue($("#isDisplayed .visibilityHidden").exists()),
+            () -> assertFalse($("#isDisplayed .visibilityHidden").isDisplayed(), "visibility:hidden"),
 
-            () -> assertTrue($("#opacity01").exists()),
-            () -> assertTrue($("#opacity01").isDisplayed(), "opacity > 0"),
+            () -> assertTrue($("#isDisplayed .opacity01").exists()),
+            () -> assertTrue($("#isDisplayed .opacity01").isDisplayed(), "opacity > 0"),
 
             //playwright returns true, selenium false here
-            () -> assertTrue($("#opacity0").exists()),
-            () -> assertFalse($("#opacity0").isDisplayed(), "opacity == 0")
+            () -> assertTrue($("#isDisplayed .opacity0").exists()),
+            () -> assertFalse($("#isDisplayed .opacity0").isDisplayed(), "opacity == 0")
         );
     }
 
