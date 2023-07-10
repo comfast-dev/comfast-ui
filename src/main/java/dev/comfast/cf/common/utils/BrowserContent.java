@@ -9,7 +9,7 @@ import static dev.comfast.cf.CfApi.open;
 import static dev.comfast.util.Utils.readResourceFile;
 
 /**
- * Utility class to write browser html / css / js
+ * Utility class to (re)write browser html / css / js using JavaScript
  */
 @SuppressWarnings({"UnusedReturnValue", "unused", "JSUnusedLocalSymbols"})
 public class BrowserContent {

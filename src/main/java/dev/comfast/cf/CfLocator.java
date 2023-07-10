@@ -1,6 +1,13 @@
 package dev.comfast.cf;
+import dev.comfast.cf.common.conditions.Condition;
+import dev.comfast.cf.common.errors.ElementFindFail;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static dev.comfast.cf.common.conditions.Conditions.not;
 
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public interface CfLocator {
@@ -11,6 +18,21 @@ public interface CfLocator {
      */
     @SuppressWarnings("java:S100")
     CfLocator $(String selector, Object... selectorParams);
+    /**
+     * Force find action. If you want only check existence of element use {@link #exists()} method.
+     *
+     * @return Found element.
+     * @throws ElementFindFail if element not found
+     */
+    CfFoundLocator find();
+    /**
+     * Force find action, doesn't throw exception.
+     * If you want only check existence of element use {@link #exists()} method.
+     *
+     * @return force locator find action.
+     * @throws ElementFindFail if element not found
+     */
+    Optional<CfFoundLocator> tryFind();
     /**
      * @param cssClass name
      * @return if element have given css class
@@ -120,12 +142,38 @@ public interface CfLocator {
      * @param <T> mapping result type
      * @return list of mapped values
      */
-    <T> List<T> map(Function<CfLocator, T> func);
+    <T> List<T> map(Function<CfFoundLocator, T> func);
+    /**
+     * Iterate thorough all elements matched by locator
+     *
+     * @param func function, eg. locator -> locator.setValue("abc")
+     */
+    void forEach(Consumer<CfFoundLocator> func);
     /**
      * nth element found by locator
      *
      * @param nth index starting of 1
      * @return CfLocator
      */
-    CfLocator nth(int nth);
+    CfFoundLocator nth(int nth);
+    /**
+     * Wait for given function return truth value (true, 1, non null object etc.)
+     * <pre>{@code
+     *  locator.waitFor(el -> el.count() > 0, 3000);
+     *  locator.waitFor(el -> el.getText().equals("some text"), 60_000);
+     * }</pre>
+     *
+     * @param timeoutMs timeout in milliseconds
+     */
+    void waitFor(Function<CfLocator, Object> func, long timeoutMs);
+    /**
+     * Wait for given condition match
+     */
+    void should(Condition condition);
+    /**
+     * Wait fo given condition not match
+     */
+    default void shouldNot(Condition condition) {
+        should(not(condition));
+    }
 }

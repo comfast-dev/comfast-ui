@@ -1,14 +1,19 @@
 package dev.comfast.cf.se;
 import dev.comfast.cf.CfAbstractLocator;
+import dev.comfast.cf.CfFoundLocator;
 import dev.comfast.cf.CfLocator;
+import dev.comfast.cf.common.conditions.Condition;
 import dev.comfast.cf.common.selector.SelectorChain;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static dev.comfast.cf.CfApi.config;
+import static dev.comfast.cf.CfApi.getWaiter;
 import static dev.comfast.cf.se.infra.DriverSource.getDriver;
 import static dev.comfast.util.Utils.readResourceFile;
 import static java.lang.String.format;
@@ -30,16 +35,26 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
         return new SeleniumLocator(chain.add(format(selector, params)));
     }
 
+    @Override public CfFoundLocator find() {
+        return new FoundElement(chain, doFind());
+    }
+
+    @Override public Optional<CfFoundLocator> tryFind() {
+        try {
+            return Optional.of(find());
+        } catch(Exception e) {return Optional.empty();}
+    }
+
     @Override public String getAttribute(String name) {
-        return action(() -> find().getAttribute(name), "getAttribute", name);
+        return action(() -> doFind().getAttribute(name), "getAttribute", name);
     }
 
     @Override public String getCssValue(String name) {
-        return action(() -> find().getCssValue(name), "getCssValue", name);
+        return action(() -> doFind().getCssValue(name), "getCssValue", name);
     }
 
     @Override public String getTagName() {
-        return action(() -> find().getTagName(), "getTagName");
+        return action(() -> doFind().getTagName(), "getTagName");
     }
 
     @Override public boolean exists() {
@@ -47,7 +62,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
     }
 
     @Override public boolean isDisplayed() {
-        return action(() -> tryFind().map(WebElement::isDisplayed).orElse(false), "isDisplayed");
+        return action(() -> doTryFind().map(WebElement::isDisplayed).orElse(false), "isDisplayed");
     }
 
     @Override public void tap() {
@@ -55,7 +70,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
     }
 
     @Override public void click() {
-        action(() -> find().click(), "click");
+        action(() -> doFind().click(), "click");
     }
 
     @Override public void focus() {
@@ -63,8 +78,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
     }
 
     @Override public void hover() {
-        var target = find();
-        action(() -> new Actions(getDriver()).moveToElement(target).perform(), "hover");
+        action(() -> new Actions(getDriver()).moveToElement(doFind()).perform(), "hover");
     }
 
     /**
@@ -72,7 +86,7 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
      */
     @Override public void dragTo(CfLocator target) {
         action(() -> {
-            WebElement targetEl = ((SeleniumLocator) target).find();
+            WebElement targetEl = ((SeleniumLocator) target).doFind();
             doExecuteJs(readResourceFile("js/dragAndDrop.js") +
                 "executeDragAndDrop(el, arguments[0])",
                 targetEl);
@@ -91,54 +105,82 @@ public class SeleniumLocator extends CfAbstractLocator implements CfLocator {
     }
 
     @Override public void clear() {
-        action(() -> find().clear(), "clear");
+        action(() -> doFind().clear(), "clear");
     }
 
     @Override public void type(String keys) {
-        action(() -> find().sendKeys(keys), "type:", keys);
+        action(() -> doFind().sendKeys(keys), "type:", keys);
     }
 
     @Override public int count() {
         return action(() -> finder.findAll().size(), "count");
     }
 
-    @Override public CfLocator nth(int nth) {
+    @Override public CfFoundLocator nth(int nth) {
         return action(() -> new FoundElement(chain, finder.findAll().get(nth - 1)),
             "nth(%d)", nth);
+    }
+
+    @Override public void waitFor(Function<CfLocator, Object> func, long timeoutMs) {
+        action(timeoutMs, (Runnable) func, "wait for function");
+    }
+
+    @Override public void should(Condition condition) {
+        var waiter = getWaiter().configure(c ->
+            c.timeoutMs(config.getLong("cf.timeoutMs"))
+                .description("should " + condition));
+
+        action(() -> condition.expect(this), "should " + condition);
+
+//        locatorEvents.action(
+//            new BeforeEvent<>(this, "should " + condition),
+//            () -> waiter.waitFor(() -> condition.expect(this)));
     }
 
     @Override public Object executeJs(String script, Object... args) {
         return action(() -> doExecuteJs(script, args), "ececuteJs", script, args);
     }
 
-    @Override public <T> List<T> map(Function<CfLocator, T> func) {
-        return action(() ->
-            finder.findAll().stream()
-                .map(el -> new FoundElement(chain, el))
-                .map(func).collect(toList()), "map");
+    @Override public <T> List<T> map(Function<CfFoundLocator, T> func) {
+        return action(() -> finder.findAll().stream()
+            .map(el -> new FoundElement(chain, el))
+            .map(func).collect(toList()), "map");
+    }
+
+    @Override public void forEach(Consumer<CfFoundLocator> func) {
+        action(() -> finder.findAll().stream()
+            .map(el -> new FoundElement(chain, el))
+            .forEach(func), "forEach");
     }
 
     /**
      * Execute JS, where variable: el ===> current element
      */
     protected Object doExecuteJs(String script, Object... args) {
-        WebElement webElement = find();
-
-//        allArgs is === [...args, webElement]
-        Object[] allArgs = new Object[args.length + 1];
-        System.arraycopy(args, 0, allArgs, 0, args.length);
-        allArgs[args.length] = webElement;
-
+        var argsWithWebElement = addArgument(args, doFind());
         //noinspection JSUnusedLocalSymbols
-        return getDriver().executeScript("const el = arguments[" + args.length + "];\n" + script, allArgs);
+        return getDriver().executeScript(
+            "const el = arguments[" + args.length + "];\n" + script, argsWithWebElement);
     }
 
-    protected WebElement find() {
+    protected WebElement doFind() {
+        //find event
         return finder.find();
     }
 
-    protected Optional<WebElement> tryFind() {
-        try { return Optional.of(find());
-        } catch(Exception e) { return Optional.empty(); }
+    protected Optional<WebElement> doTryFind() {
+        try {
+            return Optional.of(doFind());
+        } catch(Exception e) {return Optional.empty();}
+    }
+
+    /**
+     * @return new array with added element at the end
+     */
+    private Object[] addArgument(Object[] array, Object addElement) {
+        Object[] newArray = new Object[array.length + 1];
+        System.arraycopy(array, 0, newArray, 0, array.length);
+        newArray[array.length] = addElement;
+        return newArray;
     }
 }

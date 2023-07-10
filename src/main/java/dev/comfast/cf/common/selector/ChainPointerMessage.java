@@ -5,6 +5,15 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 
+/**
+ * Generate message with pointer to selector index.
+ * <p>Example:</p>
+ * <pre>{@code
+ *     ul.list >> li[name=abc] >> div >> span
+ *                                ^
+ *                                some message about this div
+ *  }</pre>
+ */
 @RequiredArgsConstructor
 public class ChainPointerMessage {
     public static final String ARROW = "^"; // ↑

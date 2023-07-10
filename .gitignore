@@ -3,3 +3,5 @@ build
 .gradle
 .idea
 !.idea/codeStyles
+appConfig.yaml
+src/test/resources/appConfig.yaml

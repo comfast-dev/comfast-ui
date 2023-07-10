@@ -1,3 +1,4 @@
+# create file "appConfig.yaml" to customize local configuration.
 cf:
   backend: selenium
   browser:

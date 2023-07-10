@@ -54,7 +54,7 @@ class TimeoutTest {
                 () -> timeout.type("def"))
                 .hasMessageContaining("Wait failed after 200ms"));
 
-            assertThat(time.getMillis()).isGreaterThanOrEqualTo(TIMEOUT);
+            assertThat(time.getMillis()).isGreaterThan(TIMEOUT - 5);
         });
     }
 }

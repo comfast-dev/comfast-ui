@@ -63,20 +63,20 @@
 
 <table id="isDisplayed">
   <tr><th colspan="2">isDisplayed</th></tr>
-  <tr><td>Default: </td><td><span id='default'>Hello</span></td></tr>
-  <tr><td>display:none </td><td><span id='displayNone' style='display:none'>Hello</span></td></tr>
-  <tr><td>visibility:hidden</td><td><span id='hidden' style='visibility:hidden'>Hello</span></td>
-  </tr>
-  <tr><td>opacity:0.1 </td><td><span id='opacity01' style='opacity: 0.1'>Hello</span></td></tr>
-  <tr><td>opacity:0 </td><td><span id='opacity0' style='opacity: 0'>Hello</span></td></tr>
+  <tr><td>Default: </td><td><span class='default'>Hello</span></td></tr>
+  <tr><td>display:none </td><td><span class='displayNone' style='display:none'>Hello</span></td></tr>
+  <tr><td>visibility:hidden</td><td><span class='visibilityHidden' style='visibility:hidden'>Hello</span></td></tr>
+  <tr><td>opacity:0.1 </td><td><span class='opacity01' style='opacity: 0.1'>Hello</span></td></tr>
+  <tr><td>opacity:0 </td><td><span class='opacity0' style='opacity: 0'>Hello</span></td></tr>
 </table>
 
 <form id="testForm">
   <table>
     <tr><th colspan="2">Test form</th></tr>
     <tr class="text"><td>input type=text:</td><td><label><input type="text" value=""></label></td></tr>
-    <tr class="text_abc"><td>input type=text: value=abc</td><td><label><input type="text" value="abc"></label></td></tr>
-    <tr class="required"><td>input type=text required:</td><td><label><input type="text" required></label></td></tr>
+    <tr class="text_abc"><td>input value=abc</td><td><label><input value="abc"></label></td></tr>
+    <tr class="required"><td>input required:</td><td><label><input required></label></td></tr>
+    <tr class="disabled"><td>input disabled:</td><td><label><input disabled></label></td></tr>
     <tr class="password"><td>input type=password:</td><td><input type="password"></td></tr>
     <tr class="number"><td>input type=number:</td><td><input type="number"></td></tr>
     <tr class="email"><td>input type=email:</td><td><input type="email"></td></tr>
@@ -178,21 +178,17 @@
   </td></tr>
   <tr id="obscured"><td>obscured button</td><td>
     <button id="obscuredButton" style="width: 100px; margin: 40px 0;">Try to click me</button>
-    <div style="position: absolute;
-                height: 100px;
-                width: 100px;
-                background: rgba(255,0,0,.5);
-                margin-left: 40px;
-                margin-top: -120px;">
+    <div style="position: absolute; height: 100px; width: 100px; background: rgba(255,0,0,.5); margin-left: 40px; margin-top: -120px;">
       div over button
     </div>
   </td></tr>
   <tr id="movingButton">
     <td>Moving button, clicks:<span class="counter">0</span>
-      <button onclick="setValue(`#movingButton .counter`, 0)">Reset</button>
+      <button onclick="$('#movingButton .target').style.animation = 'movingButton 1s ease-in-out 1s infinite alternate'">Start</button>
+      <button onclick="setValue(`#movingButton .counter`, 0);$('#movingButton .target').style.animation = ''">Reset</button>
     </td>
     <td>
-      <button style="position: relative;left: 0;animation: movingButton 1s ease-in-out 1s infinite alternate;" onclick="increment('#movingButton .counter')">I am moving</button>
+      <button class="target" style="position: relative;left: 0;" onclick="increment('#movingButton .counter')">I am moving</button>
     </td></tr>
   <tr id="countdown">
     <td>Spawn HTML after timeout<br>
@@ -202,6 +198,9 @@
       <button name="reset" onclick="countdown.reset()">Reset</button>
     </td><td class="target">
   </td></tr>
+</table>
+<table id="Nested elements">
+  <tr><th colspan="2">Nested elements</th></tr>
   <tr id="iframes"><td>nested Iframes</td><td>
     <iframe id="myFrame"></iframe>
   </td></tr>
@@ -210,10 +209,13 @@
       <my-div html="<h5>We need go deeper</h5>"></my-div>
     </my-div>
   </td></tr>
+  <tr id="scrolledDiv"><td>Text scrolled inside div</td><td>
+    <div style="height: 100px; overflow-y: scroll; border: 1px solid black">
+      <div style="height: 200px; background: #ffafaf;">Scroll down to show text</div>
+      <p>Not visible text</p>
+    </div>
+  </td></tr>
 </table>
-</body>
-</html>
-
 
 <script>
     /// utility functions
@@ -295,3 +297,5 @@
     customElements.define("my-div", MyDiv);
 
 </script>
+</body>
+</html>

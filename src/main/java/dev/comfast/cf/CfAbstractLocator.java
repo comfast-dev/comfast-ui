@@ -1,5 +1,4 @@
 package dev.comfast.cf;
-
 import dev.comfast.cf.common.selector.SelectorChain;
 import dev.comfast.experimental.events.model.BeforeEvent;
 import lombok.EqualsAndHashCode;
@@ -66,5 +65,15 @@ public abstract class CfAbstractLocator implements CfLocator {
         locatorEvents.action(
             new BeforeEvent<>(this, name, params),
             () -> getWaiter().waitFor(actionFunction));
+    }
+
+    /**
+     * go to {@link #action(Supplier, String, Object...)}
+     */
+    protected void action(long timeoutMs, Runnable actionFunction, String name, Object... params) {
+        locatorEvents.action(
+            new BeforeEvent<>(this, name, params),
+            () -> getWaiter().configure(b -> b.timeoutMs(timeoutMs))
+                .waitFor(actionFunction));
     }
 }
